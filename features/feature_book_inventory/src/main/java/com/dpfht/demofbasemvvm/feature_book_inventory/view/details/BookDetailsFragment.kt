@@ -2,7 +2,6 @@ package com.dpfht.demofbasemvvm.feature_book_inventory.view.details
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +16,7 @@ import com.dpfht.demofbasemvvm.feature_book_inventory.di.DaggerBookDetailsCompon
 import com.dpfht.demofbasemvvm.framework.di.dependency.NavigationServiceDependency
 import com.dpfht.demofbasemvvm.framework.navigation.NavigationService
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
@@ -29,8 +29,6 @@ class BookDetailsFragment : Fragment() {
 
   @Inject
   lateinit var navigationService: NavigationService
-
-  private var bookId = ""
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -58,7 +56,7 @@ class BookDetailsFragment : Fragment() {
     setListener()
 
     arguments?.let {
-      bookId = it.getString("book_id") ?: ""
+      val bookId = it.getString("book_id") ?: ""
       if (bookId.isNotEmpty()) {
         viewModel.bookId = bookId
         viewModel.start()
@@ -126,5 +124,7 @@ class BookDetailsFragment : Fragment() {
     binding.tvBookWriter.text = "written by ${book.writer}"
     binding.tvBookStock.text = "Stock: ${book.stock}"
     binding.tvBookDescription.text = book.description
+
+    Picasso.get().load(book.urlImage).into(binding.ivBookImage)
   }
 }

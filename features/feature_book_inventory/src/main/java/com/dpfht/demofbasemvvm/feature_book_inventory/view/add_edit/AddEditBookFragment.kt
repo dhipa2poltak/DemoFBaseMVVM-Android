@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentAddEditBookBinding
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,6 +22,14 @@ class AddEditBookFragment : Fragment() {
 
   private lateinit var binding: FragmentAddEditBookBinding
   private val viewModel by viewModels<AddEditBookViewModel>()
+
+  private val pickMedia = registerForActivityResult(PickVisualMedia()) { uri ->
+    if (uri != null) {
+      viewModel.uriLocalImage = uri
+      binding.ivBookImage.setImageURI(uri)
+      binding.tvNoBookImage.visibility = View.GONE
+    }
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +103,10 @@ class AddEditBookFragment : Fragment() {
     binding.btnReset.setOnClickListener {
       resetFormBook()
     }
+
+    binding.ivBookImage.setOnClickListener {
+      pickMedia.launch(PickVisualMediaRequest(ImageOnly))
+    }
   }
 
   private fun isValidInputForm(): Boolean {
@@ -116,10 +132,17 @@ class AddEditBookFragment : Fragment() {
       retval = false
     }
 
+    if (viewModel.theBook == null && viewModel.uriLocalImage == null) {
+      Toast.makeText(requireContext(), "please select the book image", Toast.LENGTH_SHORT).show()
+      retval = false
+    }
+
     return retval
   }
 
   private fun resetFormBook() {
+    viewModel.uriLocalImage = null
+
     if (viewModel.theBook != null) {
       binding.tvTitleScreen.text = "Update Book"
 
@@ -130,6 +153,9 @@ class AddEditBookFragment : Fragment() {
         binding.etBookStock.setText("${it.stock}")
 
         binding.etBookTitle.requestFocus()
+
+        Picasso.get().load(it.urlImage).into(binding.ivBookImage)
+        binding.tvNoBookImage.visibility = View.GONE
       }
     } else {
       binding.tvTitleScreen.text = "Add Book"
@@ -140,6 +166,9 @@ class AddEditBookFragment : Fragment() {
       binding.etBookStock.setText("")
 
       binding.etBookTitle.requestFocus()
+
+      binding.ivBookImage.setImageURI(null)
+      binding.tvNoBookImage.visibility = View.VISIBLE
     }
   }
 }

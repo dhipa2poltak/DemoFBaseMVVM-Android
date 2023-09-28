@@ -89,6 +89,14 @@ class BookListFragment : Fragment() {
 
     viewModel.refreshBooksData.observe(viewLifecycleOwner) { isRefresh ->
       if (isRefresh) {
+        if (viewModel.books.isEmpty()) {
+          binding.tvNoData.visibility = View.VISIBLE
+          binding.rvBook.visibility = View.INVISIBLE
+        } else {
+          binding.tvNoData.visibility = View.GONE
+          binding.rvBook.visibility = View.VISIBLE
+        }
+
         booksAdapter.notifyDataSetChanged()
       }
     }

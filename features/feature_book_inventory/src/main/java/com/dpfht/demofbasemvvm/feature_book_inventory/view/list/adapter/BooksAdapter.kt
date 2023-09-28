@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.LayoutRowBookBinding
 import com.dpfht.demofbasemvvm.feature_book_inventory.view.list.adapter.BooksAdapter.BooksViewHolder
+import com.squareup.picasso.Picasso
 
 class BooksAdapter(
   private val books: List<BookEntity>,
@@ -24,6 +25,8 @@ class BooksAdapter(
     holder.binding.tvTitleValue.text = book.title
     holder.binding.tvWriterValue.text = book.writer
     holder.binding.tvStockValue.text = "${book.stock}"
+
+    Picasso.get().load(book.urlImage).into(holder.binding.ivBook)
 
     holder.binding.root.setOnClickListener {
       onClickBookRow(book)

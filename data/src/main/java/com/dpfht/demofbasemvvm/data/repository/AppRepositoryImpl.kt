@@ -96,12 +96,12 @@ class AppRepositoryImpl(
     return firebaseDataSource.getStreamBookState()
   }
 
-  override suspend fun addBook(book: BookEntity): VoidResult {
-    return firebaseDataSource.addBook(book)
+  override suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult {
+    return firebaseDataSource.addBook(book, uriStringImage)
   }
 
-  override suspend fun updateBook(book: BookEntity): VoidResult {
-    return firebaseDataSource.updateBook(book)
+  override suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult {
+    return firebaseDataSource.updateBook(book, uriStringImage)
   }
 
   override suspend fun deleteBook(book: BookEntity): VoidResult {

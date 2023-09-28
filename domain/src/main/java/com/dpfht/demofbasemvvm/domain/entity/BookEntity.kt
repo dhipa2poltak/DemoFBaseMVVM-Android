@@ -8,8 +8,8 @@ data class BookEntity(
   val writer: String = "",
   val description: String = "",
   val stock: Int = 0,
-  val uriLocalPhoto: String = "",
-  val urlRemotePhoto: String = "",
+  val pathImageInServer: String = "",
+  val urlImage: String = "",
   val uid: String = "",
   val createdAt: Long = 0
 ): Serializable

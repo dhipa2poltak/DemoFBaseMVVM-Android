@@ -8,7 +8,7 @@ class UpdateBookUseCaseImpl(
   private val appRepository: AppRepository
 ): UpdateBookUseCase {
 
-  override suspend operator fun invoke(book: BookEntity): VoidResult {
-    return appRepository.updateBook(book)
+  override suspend operator fun invoke(book: BookEntity, uriStringImage: String): VoidResult {
+    return appRepository.updateBook(book, uriStringImage)
   }
 }

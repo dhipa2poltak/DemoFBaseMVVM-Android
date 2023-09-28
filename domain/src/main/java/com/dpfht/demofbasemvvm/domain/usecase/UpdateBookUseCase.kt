@@ -5,5 +5,5 @@ import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 
 interface UpdateBookUseCase {
 
-  suspend operator fun invoke(book: BookEntity): VoidResult
+  suspend operator fun invoke(book: BookEntity, uriStringImage: String): VoidResult
 }

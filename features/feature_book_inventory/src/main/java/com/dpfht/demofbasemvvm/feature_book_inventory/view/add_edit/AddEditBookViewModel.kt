@@ -1,5 +1,6 @@
 package com.dpfht.demofbasemvvm.feature_book_inventory.view.add_edit
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,6 +44,7 @@ class AddEditBookViewModel @Inject constructor(
   private val compositeDisposable = CompositeDisposable()
 
   var theBook: BookEntity? = null
+  var uriLocalImage: Uri? = null
 
   fun start() {
     compositeDisposable.add(
@@ -88,12 +90,13 @@ class AddEditBookViewModel @Inject constructor(
     )
   }
 
-  fun addBook(title: String, writer: String, description: String, stock: Int, uriLocalPhoto: String = "") {
+  fun addBook(title: String, writer: String, description: String, stock: Int) {
     _isShowDialogLoading.postValue(true)
 
     viewModelScope.launch {
-      val book = BookEntity(title = title, writer = writer, description = description, stock = stock, uriLocalPhoto = uriLocalPhoto)
-      when (val result = addBookUseCase(book)) {
+      val book = BookEntity(title = title, writer = writer, description = description, stock = stock)
+      val uriStringImage = uriLocalImage?.toString() ?: ""
+      when (val result = addBookUseCase(book, uriStringImage)) {
         VoidResult.Success -> {
           onSuccessAddBook()
         }
@@ -115,14 +118,14 @@ class AddEditBookViewModel @Inject constructor(
     }
   }
 
-  fun updateBook(title: String, writer: String, description: String, stock: Int, uriLocalPhoto: String = "") {
+  fun updateBook(title: String, writer: String, description: String, stock: Int) {
     _isShowDialogLoading.postValue(true)
 
     viewModelScope.launch {
       theBook?.let {
-        val book = it.copy(title = title, writer = writer, description = description, stock = stock, uriLocalPhoto = uriLocalPhoto)
+        val book = it.copy(title = title, writer = writer, description = description, stock = stock)
 
-        when (val result = updateBookUseCase(book)) {
+        when (val result = updateBookUseCase(book, uriLocalImage?.toString() ?: "")) {
           VoidResult.Success -> {
             onSuccessUpdateBook()
           }

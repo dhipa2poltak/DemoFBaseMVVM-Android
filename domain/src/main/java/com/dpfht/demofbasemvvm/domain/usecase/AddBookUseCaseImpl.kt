@@ -8,7 +8,7 @@ class AddBookUseCaseImpl(
   private val appRepository: AppRepository
 ): AddBookUseCase {
 
-  override suspend operator fun invoke(book: BookEntity): VoidResult {
-    return appRepository.addBook(book)
+  override suspend operator fun invoke(book: BookEntity, uriStringImage: String): VoidResult {
+    return appRepository.addBook(book, uriStringImage)
   }
 }

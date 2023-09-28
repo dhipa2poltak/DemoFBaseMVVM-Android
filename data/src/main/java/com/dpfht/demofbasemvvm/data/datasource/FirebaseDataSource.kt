@@ -29,8 +29,8 @@ interface FirebaseDataSource {
   suspend fun fetchFCMQuota(): VoidResult
   suspend fun setFCMQuota(count: Int): VoidResult
   fun getStreamBookState(): Observable<BookState>
-  suspend fun addBook(book: BookEntity): VoidResult
-  suspend fun updateBook(book: BookEntity): VoidResult
+  suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult
+  suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult
   suspend fun deleteBook(book: BookEntity): VoidResult
   suspend fun getAllBooks(): VoidResult
   suspend fun getBook(bookId: String): VoidResult

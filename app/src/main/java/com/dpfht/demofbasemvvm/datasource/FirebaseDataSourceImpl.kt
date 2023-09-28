@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.IntentSender
+import android.net.Uri
 import android.os.Bundle
+import android.webkit.MimeTypeMap
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -45,6 +47,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.storage.ktx.storage
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import io.reactivex.rxjava3.subjects.PublishSubject
@@ -483,7 +486,7 @@ class FirebaseDataSourceImpl(
     return theBookState
   }
 
-  override suspend fun addBook(book: BookEntity): VoidResult {
+  override suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult {
     val uid = Firebase.auth.currentUser?.uid
 
     if (uid != null) {
@@ -491,11 +494,29 @@ class FirebaseDataSourceImpl(
       val idDoc = docRef.id
       val createdAt = Calendar.getInstance().timeInMillis
 
-      val newBook = book.copy(documentId = idDoc, uid = uid, createdAt = createdAt)
-      docRef.set(newBook).addOnSuccessListener {
-        rawBookState.onNext(BookState.BookAdded("the book is added successfully"))
-      }.addOnFailureListener {
-        rawBookState.onNext(BookState.ErrorAddBook("Failed to add the book"))
+      val uriImage = Uri.parse(uriStringImage)
+      val ext = "." + getFileExtension(uriImage)
+      val stream = context.contentResolver.openInputStream(uriImage)
+      if (ext.isNotEmpty() && stream != null) {
+        val pathInServer = "images/$uid/" + Calendar.getInstance().timeInMillis.toString() + ext
+
+        val storageRef = Firebase.storage.reference.child(pathInServer)
+        storageRef.putStream(stream).addOnSuccessListener {
+          storageRef.downloadUrl.addOnSuccessListener {
+            val newBook = book.copy(documentId = idDoc, uid = uid, createdAt = createdAt, pathImageInServer = pathInServer, urlImage = it.toString())
+            docRef.set(newBook).addOnSuccessListener {
+              rawBookState.onNext(BookState.BookAdded("the book is added successfully"))
+            }.addOnFailureListener {
+              rawBookState.onNext(BookState.ErrorAddBook("Failed to add the book"))
+            }
+          }.addOnFailureListener {
+            rawBookState.onNext(BookState.ErrorAddBook("Failed to get image url, failed to add the book"))
+          }
+        }.addOnFailureListener {
+          rawBookState.onNext(BookState.ErrorAddBook("Failed to upload image, failed to add the book"))
+        }
+      } else {
+        rawBookState.onNext(BookState.ErrorAddBook("file extension is empty or stream is null, failed to add the book"))
       }
 
       return VoidResult.Success
@@ -504,23 +525,88 @@ class FirebaseDataSourceImpl(
     return VoidResult.Error("failed to add book because no uid")
   }
 
-  override suspend fun updateBook(book: BookEntity): VoidResult {
-    val docRef = Firebase.firestore.collection("books").document(book.documentId)
-    docRef.set(book).addOnSuccessListener {
-      rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
-    }.addOnFailureListener {
-      rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+  private fun getFileExtension(uri: Uri): String {
+    return MimeTypeMap.getSingleton().getExtensionFromMimeType(context.contentResolver.getType(uri)) ?: ""
+  }
+
+  override suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult {
+    if (uriStringImage.isNotEmpty()) {
+      val uriImage = Uri.parse(uriStringImage)
+      val stream = context.contentResolver.openInputStream(uriImage)
+      if (stream != null) {
+        val pathInServer = book.pathImageInServer
+
+        val storageRef = Firebase.storage.reference.child(pathInServer)
+        storageRef.putStream(stream).addOnSuccessListener {
+          storageRef.downloadUrl.addOnSuccessListener {
+            val docRef = Firebase.firestore.collection("books").document(book.documentId)
+            val editingBook = book.copy(urlImage = it.toString())
+            docRef.set(editingBook).addOnSuccessListener {
+              rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
+            }.addOnFailureListener {
+              rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+            }
+          }.addOnFailureListener {
+            rawBookState.onNext(BookState.ErrorUpdateBook("Failed to get image url"))
+
+            val docRef = Firebase.firestore.collection("books").document(book.documentId)
+            docRef.set(book).addOnSuccessListener {
+              rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
+            }.addOnFailureListener {
+              rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+            }
+          }
+        }.addOnFailureListener {
+          rawBookState.onNext(BookState.ErrorUpdateBook("Failed to upload image"))
+
+          val docRef = Firebase.firestore.collection("books").document(book.documentId)
+          docRef.set(book).addOnSuccessListener {
+            rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
+          }.addOnFailureListener {
+            rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+          }
+        }
+      } else {
+        rawBookState.onNext(BookState.ErrorUpdateBook("Failed to upload image, because stream is null"))
+
+        val docRef = Firebase.firestore.collection("books").document(book.documentId)
+        docRef.set(book).addOnSuccessListener {
+          rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
+        }.addOnFailureListener {
+          rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+        }
+      }
+    } else {
+      val docRef = Firebase.firestore.collection("books").document(book.documentId)
+      docRef.set(book).addOnSuccessListener {
+        rawBookState.onNext(BookState.BookUpdated("the book is updated successfully"))
+      }.addOnFailureListener {
+        rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
+      }
     }
 
     return VoidResult.Success
   }
 
   override suspend fun deleteBook(book: BookEntity): VoidResult {
-    val docRef = Firebase.firestore.collection("books").document(book.documentId)
-    docRef.delete().addOnSuccessListener {
-      rawBookState.onNext(BookState.BookDeleted("the book is deleted successfully"))
+    val pathInServer = book.pathImageInServer
+    val storageRef = Firebase.storage.reference.child(pathInServer)
+    storageRef.delete().addOnSuccessListener {
+      val docRef = Firebase.firestore.collection("books").document(book.documentId)
+      docRef.delete().addOnSuccessListener {
+        rawBookState.onNext(BookState.BookDeleted("the book is deleted successfully"))
+      }.addOnFailureListener {
+        rawBookState.onNext(BookState.ErrorDeleteBook("Failed to delete the book"))
+      }
     }.addOnFailureListener {
-      rawBookState.onNext(BookState.ErrorDeleteBook("Failed to delete the book"))
+      rawBookState.onNext(BookState.ErrorDeleteBook("Failed to delete the book image"))
+
+      val docRef = Firebase.firestore.collection("books").document(book.documentId)
+      docRef.delete().addOnSuccessListener {
+        rawBookState.onNext(BookState.BookDeleted("the book is deleted successfully"))
+      }.addOnFailureListener {
+        rawBookState.onNext(BookState.ErrorDeleteBook("Failed to delete the book"))
+      }
     }
 
     return VoidResult.Success
