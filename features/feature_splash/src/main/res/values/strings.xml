@@ -1,0 +1,5 @@
+<resources>
+  <string name="splash_text_loading">loading…</string>
+
+  <string name="splash_image_desc_logo">splash logo</string>
+</resources>

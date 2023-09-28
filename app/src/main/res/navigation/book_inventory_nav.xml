@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/book_inventory_nav"
+    app:startDestination="@+id/bookListFragment">
+
+  <fragment
+      android:id="@+id/bookListFragment"
+      android:name="com.dpfht.demofbasemvvm.feature_book_inventory.view.list.BookListFragment"
+      android:label="Book Inventory"
+      tools:layout="@layout/fragment_book_list">
+
+  </fragment>
+
+  <fragment
+      android:id="@+id/addEditBookFragment"
+      android:name="com.dpfht.demofbasemvvm.feature_book_inventory.view.add_edit.AddEditBookFragment"
+      android:label="Add/Update Book"
+      tools:layout="@layout/fragment_add_edit_book">
+
+    <deepLink
+        app:uri="android-app://${applicationId}/add_edit_book_fragment" />
+
+  </fragment>
+
+  <fragment
+      android:id="@+id/bookDetailsFragment"
+      android:name="com.dpfht.demofbasemvvm.feature_book_inventory.view.details.BookDetailsFragment"
+      android:label="Book Details"
+      tools:layout="@layout/fragment_book_details">
+
+    <deepLink
+        app:uri="android-app://${applicationId}/book_details_fragment?book_id={book_id}" />
+
+    <argument
+        android:name="book_id"
+        android:defaultValue="-1"
+        app:argType="string" />
+
+    <action
+        android:id="@+id/action_from_details_to_edit"
+        app:destination="@+id/addEditBookFragment"/>
+  </fragment>
+
+</navigation>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/push_message_nav"
+    app:startDestination="@+id/pushMessageFragment">
+
+  <fragment
+      android:id="@+id/pushMessageFragment"
+      android:name="com.dpfht.demofbasemvvm.feature_push_message.PushMessageFragment"
+      android:label="Push Message"
+      tools:layout="@layout/fragment_push_message"/>
+
+</navigation>
