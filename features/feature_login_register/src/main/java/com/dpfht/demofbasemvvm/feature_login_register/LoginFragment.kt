@@ -95,13 +95,6 @@ class LoginFragment : Fragment() {
   }
 
   private fun setListener() {
-    binding.btnLogin.setOnClickListener {
-      val isGenerateCrash = false
-      if (isGenerateCrash) {
-        throw RuntimeException("Test Crash")
-      }
-    }
-
     binding.btnGoogleSignIn.setOnClickListener {
       viewModel.signInWithGoogle()
     }
