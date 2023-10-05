@@ -13,6 +13,7 @@ import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentBookListBinding
 import com.dpfht.demofbasemvvm.feature_book_inventory.di.DaggerBookListComponent
 import com.dpfht.demofbasemvvm.feature_book_inventory.view.list.adapter.BooksAdapter
+import com.dpfht.demofbasemvvm.framework.Constants
 import com.dpfht.demofbasemvvm.framework.di.dependency.NavigationServiceDependency
 import com.dpfht.demofbasemvvm.framework.navigation.NavigationService
 import com.google.android.material.snackbar.Snackbar
@@ -104,7 +105,11 @@ class BookListFragment : Fragment() {
 
   private fun setListener() {
     binding.fabAddBook.setOnClickListener {
-      navigationService.navigateInHomeToAddBook()
+      if (viewModel.books.size >= Constants.BOOK_QUOTA) {
+        Toast.makeText(requireContext(), "Book quota exceeded", Toast.LENGTH_SHORT).show()
+      } else {
+        navigationService.navigateInHomeToAddBook()
+      }
     }
   }
 

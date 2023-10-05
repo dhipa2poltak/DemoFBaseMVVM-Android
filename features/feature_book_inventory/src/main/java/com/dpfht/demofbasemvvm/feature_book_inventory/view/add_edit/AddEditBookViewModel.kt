@@ -9,8 +9,10 @@ import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import com.dpfht.demofbasemvvm.domain.usecase.AddBookUseCase
+import com.dpfht.demofbasemvvm.domain.usecase.GetAllBooksUseCase
 import com.dpfht.demofbasemvvm.domain.usecase.GetStreamBookStateUseCase
 import com.dpfht.demofbasemvvm.domain.usecase.UpdateBookUseCase
+import com.dpfht.demofbasemvvm.framework.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -23,7 +25,8 @@ import javax.inject.Inject
 class AddEditBookViewModel @Inject constructor(
   private val getStreamBookStateUseCase: GetStreamBookStateUseCase,
   private val addBookUseCase: AddBookUseCase,
-  private val updateBookUseCase: UpdateBookUseCase
+  private val updateBookUseCase: UpdateBookUseCase,
+  private val getAllBooksUseCase: GetAllBooksUseCase
 ): ViewModel() {
 
   private val _isShowDialogLoading = MutableLiveData<Boolean>()
@@ -40,6 +43,9 @@ class AddEditBookViewModel @Inject constructor(
 
   private val _closeScreenData = MutableLiveData<Boolean>()
   val closeScreenData: LiveData<Boolean> = _closeScreenData
+
+  private val _isQuotaExceeded = MutableLiveData<Boolean>()
+  val isQuotaExceeded: LiveData<Boolean> = _isQuotaExceeded
 
   private val compositeDisposable = CompositeDisposable()
 
@@ -77,6 +83,19 @@ class AddEditBookViewModel @Inject constructor(
               _modalMessage.value = ""
             }
             is BookState.ErrorUpdateBook -> {
+              _isShowDialogLoading.postValue(false)
+
+              _modalMessage.value = bookState.message
+              _modalMessage.value = ""
+            }
+            is BookState.BooksData -> {
+              _isShowDialogLoading.postValue(false)
+
+             if (theBook == null && (bookState.books.size >= Constants.BOOK_QUOTA)) {
+               _isQuotaExceeded.value = true
+             }
+            }
+            is BookState.ErrorGetAllBooks -> {
               _isShowDialogLoading.postValue(false)
 
               _modalMessage.value = bookState.message
@@ -146,6 +165,12 @@ class AddEditBookViewModel @Inject constructor(
 
       _modalMessage.value = msg
       _modalMessage.value = ""
+    }
+  }
+
+  fun onResetAddingBookForm() {
+    viewModelScope.launch {
+      getAllBooksUseCase()
     }
   }
 }

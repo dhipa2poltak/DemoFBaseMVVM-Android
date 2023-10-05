@@ -3,6 +3,7 @@ package com.dpfht.demofbasemvvm.framework
 object Constants {
 
   const val DELAY_SPLASH = 3000
+  const val BOOK_QUOTA = 5
 
   object RestApi {
     const val BASE_URL = "https://fcm.googleapis.com/"

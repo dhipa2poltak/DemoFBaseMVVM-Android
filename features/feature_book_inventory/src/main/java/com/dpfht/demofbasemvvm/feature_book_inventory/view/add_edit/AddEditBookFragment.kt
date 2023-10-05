@@ -48,9 +48,9 @@ class AddEditBookFragment : Fragment() {
 
     arguments?.let {
       viewModel.theBook = it.getSerializable("book_arg") as BookEntity?
-      resetFormBook()
     }
 
+    resetFormBook()
     viewModel.start()
   }
 
@@ -80,6 +80,13 @@ class AddEditBookFragment : Fragment() {
     viewModel.closeScreenData.observe(viewLifecycleOwner) { isClose ->
       if (isClose) {
         findNavController().navigateUp()
+      }
+    }
+
+    viewModel.isQuotaExceeded.observe(viewLifecycleOwner) { isQuotaExceeded ->
+      if (isQuotaExceeded) {
+        binding.btnSubmit.isEnabled = false
+        Toast.makeText(requireContext(), "Book quota exceeded", Toast.LENGTH_SHORT).show()
       }
     }
   }
@@ -169,6 +176,8 @@ class AddEditBookFragment : Fragment() {
 
       binding.ivBookImage.setImageURI(null)
       binding.tvNoBookImage.visibility = View.VISIBLE
+
+      viewModel.onResetAddingBookForm()
     }
   }
 }
