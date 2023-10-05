@@ -403,7 +403,6 @@ class FirebaseDataSourceImpl(
     return theFCMQuota
   }
 
-  // this method will be moved to its own usecase class sometime later
   override suspend fun fetchFCMQuota(): VoidResult {
     val uid = Firebase.auth.currentUser?.uid
     if (uid != null) {
@@ -415,40 +414,24 @@ class FirebaseDataSourceImpl(
             val formatterDate = SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN)
             val savedTimeInMillis = formatterDate.parse(fcmQuota.quotaDate)?.time
 
-            if (savedTimeInMillis != null) {
-              val savedCal = Calendar.getInstance()
-              savedCal.timeInMillis = savedTimeInMillis
-              val todayCal = Calendar.getInstance()
-              todayCal.timeInMillis = Date().time
+            val todayText = formatterDate.format(Calendar.getInstance().time)
+            val todayTimeInMillis = formatterDate.parse(todayText)?.time
 
-              if (todayCal.get(Calendar.YEAR) > savedCal.get(Calendar.YEAR)) {
+            if (todayTimeInMillis != null && savedTimeInMillis != null) {
+              if (todayTimeInMillis > savedTimeInMillis) {
                 rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
-              } else if (todayCal.get(Calendar.YEAR) == savedCal.get(Calendar.YEAR)) {
-                if (todayCal.get(Calendar.MONTH) > savedCal.get(Calendar.MONTH)) {
-                  rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
-                } else if (todayCal.get(Calendar.MONTH) == savedCal.get(Calendar.MONTH)) {
-                  if (todayCal.get(Calendar.DATE) > savedCal.get(Calendar.DATE)) {
-                    rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
-                  } else if (todayCal.get(Calendar.DATE) == savedCal.get(Calendar.DATE)) {
-                    rawFCMQuota.onNext(Result.Success(fcmQuota.quota))
-                  } else {
-                    rawFCMQuota.onNext(Result.Success(0))
-                  }
-                } else {
-                  rawFCMQuota.onNext(Result.Success(0))
-                }
+              } else if (todayTimeInMillis == savedTimeInMillis) {
+                rawFCMQuota.onNext(Result.Success(fcmQuota.quota))
               } else {
                 rawFCMQuota.onNext(Result.Success(0))
               }
-            } else {
-              rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
+
+              return@addOnSuccessListener
             }
-          } else {
-            rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
           }
-        } else {
-          rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
         }
+
+        rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
       }.addOnFailureListener { e ->
         rawFCMQuota.onNext(Result.ErrorResult(e.message ?: "failed to fetch FCM Quota"))
         rawFCMQuota.onNext(Result.Success(0))
