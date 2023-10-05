@@ -66,6 +66,8 @@
           android:hint="enter book title"
           android:background="@android:drawable/editbox_background_normal"
           android:padding="10dp"
+          android:maxLines="1"
+          android:singleLine="true"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tv_book_title"
           app:layout_constraintEnd_toEndOf="parent"/>
@@ -91,6 +93,8 @@
           android:hint="enter book writer"
           android:background="@android:drawable/editbox_background_normal"
           android:padding="10dp"
+          android:maxLines="1"
+          android:singleLine="true"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/tv_book_writer"
           app:layout_constraintEnd_toEndOf="parent"/>
