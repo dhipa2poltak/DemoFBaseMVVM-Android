@@ -51,6 +51,7 @@ class SplashViewModel @Inject constructor(
   }
 
   private fun onError(message: String) {
-    _errorMessage.postValue(message)
+    _errorMessage.value = message
+    _errorMessage.postValue("")
   }
 }
