@@ -83,7 +83,8 @@ class UserProfileViewModel @Inject constructor(
 
   private fun onErrorGetUserProfile(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   fun logout() {
@@ -107,6 +108,7 @@ class UserProfileViewModel @Inject constructor(
 
   private fun onErrorLogout(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _toastMessage.postValue(msg)
+    _toastMessage.value = msg
+    _toastMessage.postValue("")
   }
 }

@@ -61,11 +61,15 @@ class UserProfileFragment : Fragment() {
     }
 
     viewModel.toastMessage.observe(viewLifecycleOwner) { msg ->
-      Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+      if (msg.isNotEmpty()) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+      }
     }
 
     viewModel.modalMessage.observe(viewLifecycleOwner) { msg ->
-      Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+      if (msg.isNotEmpty()) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+      }
     }
 
     viewModel.userProfileData.observe(viewLifecycleOwner) { userProfile ->
