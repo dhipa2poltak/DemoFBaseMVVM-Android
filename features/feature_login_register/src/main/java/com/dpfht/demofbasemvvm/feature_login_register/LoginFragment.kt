@@ -62,11 +62,15 @@ class LoginFragment : Fragment() {
     }
 
     viewModel.toastMessage.observe(viewLifecycleOwner) { msg ->
-      Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+      if (msg.isNotEmpty()) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+      }
     }
 
     viewModel.modalMessage.observe(viewLifecycleOwner) { msg ->
-      Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+      if (msg.isNotEmpty()) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+      }
     }
 
     viewModel.configData.observe(viewLifecycleOwner) {
@@ -78,8 +82,6 @@ class LoginFragment : Fragment() {
     viewModel.doEnterVerificationCode.observe(viewLifecycleOwner) {
       if (it) {
         binding.btnLogin.visibility = View.INVISIBLE
-        //binding.btnGoogleSignIn.visibility = View.GONE
-        //binding.tvOr.visibility = View.GONE
 
         binding.btnVerify.visibility = View.VISIBLE
         binding.btnResendCode.visibility = View.VISIBLE

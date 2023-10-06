@@ -109,7 +109,8 @@ class LoginViewModel @Inject constructor(
 
   private fun onErrorFetchConfigs(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _toastMessage.postValue(msg)
+    _toastMessage.value = msg
+    _toastMessage.postValue("")
   }
 
   fun signInWithGoogle() {
@@ -133,7 +134,8 @@ class LoginViewModel @Inject constructor(
 
   private fun onErrorSignInWithGoogle(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   fun startLoginWithPhoneNumber(phoneNumber: String) {
@@ -157,7 +159,8 @@ class LoginViewModel @Inject constructor(
 
   private fun onErrorStartPhoneNumberVerification(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   fun verifyPhoneNumber(code: String) {
@@ -181,7 +184,8 @@ class LoginViewModel @Inject constructor(
 
   private fun onErrorVerifyPhoneNumberWithCode(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   fun resendVerificationCode() {
@@ -205,6 +209,7 @@ class LoginViewModel @Inject constructor(
 
   private fun onErrorResendVerificationCode(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 }
