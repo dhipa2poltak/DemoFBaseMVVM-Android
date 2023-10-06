@@ -67,10 +67,10 @@ class PushMessageFragment : Fragment() {
     viewModel.fcmQuotaData.observe(viewLifecycleOwner) { count ->
       if (count > 0) {
         binding.btnSend.isEnabled = true
-        binding.tvQuota.setText("Your push message quota for today is $count")
+        binding.tvQuota.text = "Your push message quota for today is $count"
       } else {
         binding.btnSend.isEnabled = false
-        binding.tvQuota.setText("You don't have any push message quota for today")
+        binding.tvQuota.text = "You don't have any push message quota for today"
       }
     }
   }

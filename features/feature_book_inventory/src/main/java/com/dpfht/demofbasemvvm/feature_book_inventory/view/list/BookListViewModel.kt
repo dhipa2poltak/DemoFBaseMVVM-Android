@@ -86,11 +86,9 @@ class BookListViewModel @Inject constructor(
   private fun onSuccessGetAllBooks() {}
 
   private fun onErrorGetAllBooks(msg: String) {
-    viewModelScope.launch(Dispatchers.Main) {
-      _isShowDialogLoading.postValue(false)
+    _isShowDialogLoading.postValue(false)
 
-      _modalMessage.value = msg
-      _modalMessage.value = ""
-    }
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 }
