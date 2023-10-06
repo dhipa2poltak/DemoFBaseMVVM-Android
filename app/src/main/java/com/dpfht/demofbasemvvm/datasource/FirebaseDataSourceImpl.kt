@@ -293,7 +293,13 @@ class FirebaseDataSourceImpl(
     } catch (_: Exception) {
     }
 
-    rawLoginState.onNext(LoginState.Logout)
+    FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
+      rawLoginState.onNext(LoginState.Logout)
+      reset()
+    }.addOnFailureListener {
+      rawLoginState.onNext(LoginState.Logout)
+      reset()
+    }
 
     return VoidResult.Success
   }
@@ -653,5 +659,19 @@ class FirebaseDataSourceImpl(
     }
 
     return VoidResult.Error("Failed to get book data because no uid")
+  }
+
+  private fun reset() {
+    //rawConfigs.onNext("")
+    rawLoginState.onNext(LoginState.None)
+    rawReceivedPushMessage.onNext(PushMessageEntity())
+    rawFCMToken.onNext("")
+    rawStateErrorConfigs.onNext("")
+    rawFCMQuota.onNext(Result.Success(-1))
+    rawBookState.onNext(BookState.None)
+
+    verificationInProgress = false
+    storedVerificationId = ""
+    phoneNumber = ""
   }
 }
