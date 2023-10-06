@@ -123,7 +123,8 @@ class PushMessageViewModel @Inject constructor(
 
   private fun onErrorFetchFCMToken(msg: String) {
     //_isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   private fun onSuccessFetchFCMQuota() {
@@ -132,7 +133,8 @@ class PushMessageViewModel @Inject constructor(
 
   private fun onErrorFetchFCMQuota(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   fun postFCMMessage(to: String, title: String, message: String) {
@@ -172,7 +174,8 @@ class PushMessageViewModel @Inject constructor(
 
   private fun onErrorPostFCMMessage(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 
   private fun onSuccessSetFCMQuota() {
@@ -181,6 +184,7 @@ class PushMessageViewModel @Inject constructor(
 
   private fun onErrorSetFCMQuota(msg: String) {
     _isShowDialogLoading.postValue(false)
-    _modalMessage.postValue(msg)
+    _modalMessage.value = msg
+    _modalMessage.postValue("")
   }
 }
