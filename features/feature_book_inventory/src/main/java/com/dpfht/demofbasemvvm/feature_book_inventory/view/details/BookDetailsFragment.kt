@@ -1,53 +1,23 @@
 package com.dpfht.demofbasemvvm.feature_book_inventory.view.details
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
+import com.dpfht.demofbasemvvm.feature_book_inventory.R
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentBookDetailsBinding
-import com.dpfht.demofbasemvvm.feature_book_inventory.di.DaggerBookDetailsComponent
-import com.dpfht.demofbasemvvm.framework.di.dependency.NavigationServiceDependency
-import com.dpfht.demofbasemvvm.framework.navigation.NavigationService
+import com.dpfht.demofbasemvvm.framework.commons.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class BookDetailsFragment : Fragment() {
+class BookDetailsFragment : BaseFragment<FragmentBookDetailsBinding>(R.layout.fragment_book_details) {
 
-  private lateinit var binding: FragmentBookDetailsBinding
   private val viewModel by viewModels<BookDetailsViewModel>()
-
-  @Inject
-  lateinit var navigationService: NavigationService
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-
-    DaggerBookDetailsComponent.builder()
-      .context(requireContext())
-      .navDependency(EntryPointAccessors.fromActivity(requireActivity(), NavigationServiceDependency::class.java))
-      .build()
-      .inject(this)
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentBookDetailsBinding.inflate(inflater, container, false)
-
-    return binding.root
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

@@ -1,51 +1,20 @@
 package com.dpfht.demofbasemvvm.feature_login_register
 
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dpfht.demofbasemvvm.feature_login_register.databinding.FragmentLoginBinding
-import com.dpfht.demofbasemvvm.feature_login_register.di.DaggerLoginComponent
-import com.dpfht.demofbasemvvm.framework.di.dependency.NavigationServiceDependency
-import com.dpfht.demofbasemvvm.framework.navigation.NavigationService
+import com.dpfht.demofbasemvvm.framework.commons.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
-  private lateinit var binding: FragmentLoginBinding
   private val viewModel by viewModels<LoginViewModel>()
-
-  @Inject
-  lateinit var navigationService: NavigationService
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-
-    DaggerLoginComponent.builder()
-      .context(requireContext())
-      .navDependency(EntryPointAccessors.fromActivity(requireActivity(), NavigationServiceDependency::class.java))
-      .build()
-      .inject(this)
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentLoginBinding.inflate(inflater, container, false)
-
-    return binding.root
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

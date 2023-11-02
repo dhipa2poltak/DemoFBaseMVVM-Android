@@ -1,55 +1,25 @@
 package com.dpfht.demofbasemvvm.feature_book_inventory.view.list
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
+import com.dpfht.demofbasemvvm.feature_book_inventory.R
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentBookListBinding
-import com.dpfht.demofbasemvvm.feature_book_inventory.di.DaggerBookListComponent
 import com.dpfht.demofbasemvvm.feature_book_inventory.view.list.adapter.BooksAdapter
 import com.dpfht.demofbasemvvm.framework.Constants
-import com.dpfht.demofbasemvvm.framework.di.dependency.NavigationServiceDependency
-import com.dpfht.demofbasemvvm.framework.navigation.NavigationService
+import com.dpfht.demofbasemvvm.framework.commons.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.EntryPointAccessors
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class BookListFragment : Fragment() {
+class BookListFragment : BaseFragment<FragmentBookListBinding>(R.layout.fragment_book_list) {
 
-  private lateinit var binding: FragmentBookListBinding
   private val viewModel by viewModels<BookListViewModel>()
 
-  @Inject
-  lateinit var navigationService: NavigationService
-
   private lateinit var booksAdapter: BooksAdapter
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-
-    DaggerBookListComponent.builder()
-      .context(requireContext())
-      .navDependency(EntryPointAccessors.fromActivity(requireActivity(), NavigationServiceDependency::class.java))
-      .build()
-      .inject(this)
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentBookListBinding.inflate(inflater, container, false)
-
-    return binding.root
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

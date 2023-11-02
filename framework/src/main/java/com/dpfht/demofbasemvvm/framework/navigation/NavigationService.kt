@@ -6,7 +6,6 @@ interface NavigationService {
 
   fun navigateToLogin()
   fun navigateToHome()
-
   fun navigateInHomeToAddBook()
   fun navigateInHomeFromDetailsToEditBook(book: BookEntity)
   fun navigateInHomeToBookDetails(bookId: String)

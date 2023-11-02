@@ -1,10 +1,7 @@
 package com.dpfht.demofbasemvvm.feature_book_inventory.view.add_edit
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
@@ -12,15 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
+import com.dpfht.demofbasemvvm.feature_book_inventory.R
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentAddEditBookBinding
+import com.dpfht.demofbasemvvm.framework.commons.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddEditBookFragment : Fragment() {
+class AddEditBookFragment : BaseFragment<FragmentAddEditBookBinding>(R.layout.fragment_add_edit_book) {
 
-  private lateinit var binding: FragmentAddEditBookBinding
   private val viewModel by viewModels<AddEditBookViewModel>()
 
   private val pickMedia = registerForActivityResult(PickVisualMedia()) { uri ->
@@ -29,15 +27,6 @@ class AddEditBookFragment : Fragment() {
       binding.ivBookImage.setImageURI(uri)
       binding.tvNoBookImage.visibility = View.GONE
     }
-  }
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentAddEditBookBinding.inflate(inflater, container, false)
-
-    return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -1,17 +1,15 @@
 package com.dpfht.demofbasemvvm.framework.di.module
 
-import com.dpfht.demofbasemvvm.framework.BuildConfig
 import com.dpfht.demofbasemvvm.data.datasource.RestDataSource
+import com.dpfht.demofbasemvvm.framework.BuildConfig
 import com.dpfht.demofbasemvvm.framework.Constants
 import com.dpfht.demofbasemvvm.framework.data.core.rest.AuthInterceptor
 import com.dpfht.demofbasemvvm.framework.data.core.rest.RestService
-import com.dpfht.demofbasemvvm.framework.data.core.rest.UnsafeOkHttpClient
 import com.dpfht.demofbasemvvm.framework.data.datasource.RestDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

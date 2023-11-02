@@ -1,30 +1,18 @@
 package com.dpfht.demofbasemvvm.feature_push_message
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dpfht.demofbasemvvm.feature_push_message.databinding.FragmentPushMessageBinding
+import com.dpfht.demofbasemvvm.framework.commons.base.BaseFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PushMessageFragment : Fragment() {
+class PushMessageFragment : BaseFragment<FragmentPushMessageBinding>(R.layout.fragment_push_message) {
 
-  private lateinit var binding: FragmentPushMessageBinding
   private val viewModel by viewModels<PushMessageViewModel>()
-
-  override fun onCreateView(
-    inflater: LayoutInflater, container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    binding = FragmentPushMessageBinding.inflate(inflater, container, false)
-
-    return binding.root
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
