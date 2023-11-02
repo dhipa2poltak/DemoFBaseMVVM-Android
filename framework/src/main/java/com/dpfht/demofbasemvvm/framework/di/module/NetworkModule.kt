@@ -3,9 +3,9 @@ package com.dpfht.demofbasemvvm.framework.di.module
 import com.dpfht.demofbasemvvm.data.datasource.RestDataSource
 import com.dpfht.demofbasemvvm.framework.BuildConfig
 import com.dpfht.demofbasemvvm.framework.Constants
-import com.dpfht.demofbasemvvm.framework.data.core.rest.AuthInterceptor
-import com.dpfht.demofbasemvvm.framework.data.core.rest.RestService
-import com.dpfht.demofbasemvvm.framework.data.datasource.RestDataSourceImpl
+import com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest.AuthInterceptor
+import com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest.RestService
+import com.dpfht.demofbasemvvm.framework.data.datasource.remote.RestDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

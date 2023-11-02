@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.framework.data.core.rest
+package com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest
 
 import com.dpfht.demofbasemvvm.data.model.remote.response.PostFCMMessageResponse
 import com.dpfht.demofbasemvvm.domain.entity.Result

@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.framework.data.core.rest
+package com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.framework.data.core.rest
+package com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest
 
 import com.dpfht.demofbasemvvm.framework.Constants
 import okhttp3.Interceptor
