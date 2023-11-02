@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.di.module
+package com.dpfht.demofbasemvvm.framework.di.module
 
 import com.dpfht.demofbasemvvm.domain.repository.AppRepository
 import com.dpfht.demofbasemvvm.domain.usecase.AddBookUseCase

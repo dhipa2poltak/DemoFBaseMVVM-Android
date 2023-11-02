@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.datasource
+package com.dpfht.demofbasemvvm.datasource.remote
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver

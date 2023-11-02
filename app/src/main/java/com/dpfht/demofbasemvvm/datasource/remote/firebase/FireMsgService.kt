@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.fcm
+package com.dpfht.demofbasemvvm.datasource.remote.firebase
 
 import android.app.Notification
 import android.app.NotificationChannel
