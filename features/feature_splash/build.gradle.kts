@@ -7,10 +7,10 @@ plugins {
 
 android {
   namespace = "com.dpfht.demofbasemvvm.feature_splash"
-  compileSdk = 33
+  compileSdk = ConfigData.compileSdkVersion
 
   defaultConfig {
-    minSdk = 21
+    minSdk = ConfigData.minSdkVersion
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")
@@ -39,16 +39,16 @@ dependencies {
 
   implementation(project(":framework"))
   implementation(project(":domain"))
-  implementation("androidx.core:core-ktx:1.9.0")
-  implementation("androidx.appcompat:appcompat:1.6.1")
-  implementation("com.google.android.material:material:1.9.0")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+  implementation(Deps.coreKtx)
+  implementation(Deps.appCompat)
+  implementation(Deps.material)
+  testImplementation(Deps.jUnit)
+  androidTestImplementation(Deps.jUnitExt)
+  androidTestImplementation(Deps.espresso)
 
-  implementation("com.google.dagger:hilt-android:2.44")
-  kapt("com.google.dagger:hilt-compiler:2.44")
+  implementation(Deps.hilt)
+  kapt(Deps.hiltCompiler)
 
-  implementation("androidx.fragment:fragment-ktx:1.6.1")
-  implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+  implementation(Deps.fragmentKtx)
+  implementation(Deps.lifecycleViewModel)
 }

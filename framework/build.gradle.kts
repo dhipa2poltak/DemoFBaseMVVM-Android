@@ -7,10 +7,10 @@ plugins {
 
 android {
   namespace = "com.dpfht.demofbasemvvm.framework"
-  compileSdk = 33
+  compileSdk = ConfigData.compileSdkVersion
 
   defaultConfig {
-    minSdk = 21
+    minSdk = ConfigData.minSdkVersion
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles("consumer-rules.pro")
@@ -40,18 +40,18 @@ dependencies {
 
   implementation(project(":domain"))
   implementation(project(":data"))
-  implementation("androidx.core:core-ktx:1.9.0")
-  implementation("androidx.appcompat:appcompat:1.6.1")
-  implementation("com.google.android.material:material:1.9.0")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+  implementation(Deps.coreKtx)
+  implementation(Deps.appCompat)
+  implementation(Deps.material)
+  testImplementation(Deps.jUnit)
+  androidTestImplementation(Deps.jUnitExt)
+  androidTestImplementation(Deps.espresso)
 
-  implementation("com.google.dagger:hilt-android:2.44")
-  kapt("com.google.dagger:hilt-compiler:2.44")
+  implementation(Deps.hilt)
+  kapt(Deps.hiltCompiler)
 
-  implementation("com.squareup.okhttp3:okhttp:4.9.3")
-  implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
-  implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-  implementation("com.google.code.gson:gson:2.9.0")
+  implementation(Deps.okHttp)
+  implementation(Deps.loggingInterceptor)
+  implementation(Deps.gsonConverter)
+  implementation(Deps.gson)
 }

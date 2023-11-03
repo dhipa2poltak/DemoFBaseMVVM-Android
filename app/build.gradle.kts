@@ -9,12 +9,12 @@ plugins {
 
 android {
   namespace = "com.dpfht.demofbasemvvm"
-  compileSdk = 33
+  compileSdk = ConfigData.compileSdkVersion
 
   defaultConfig {
     applicationId = "com.dpfht.demofbasemvvm"
-    minSdk = 21
-    targetSdk = 33
+    minSdk = ConfigData.minSdkVersion
+    targetSdk = ConfigData.targetSdkVersion
     versionCode = 1
     versionName = "1.0"
 
@@ -52,29 +52,29 @@ dependencies {
   implementation(project(":features:feature_push_message"))
   implementation(project(":features:feature_user_profile"))
 
-  implementation("androidx.core:core-ktx:1.9.0")
-  implementation("androidx.appcompat:appcompat:1.6.1")
-  implementation("com.google.android.material:material:1.9.0")
-  implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-  implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
-  implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.5")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+  implementation(Deps.coreKtx)
+  implementation(Deps.appCompat)
+  implementation(Deps.material)
+  implementation(Deps.constraintLayout)
+  implementation(Deps.navigationFragment)
+  implementation(Deps.navigationUi)
+  testImplementation(Deps.jUnit)
+  androidTestImplementation(Deps.jUnitExt)
+  androidTestImplementation(Deps.espresso)
 
-  implementation("com.google.dagger:hilt-android:2.44")
-  kapt("com.google.dagger:hilt-compiler:2.44")
+  implementation(Deps.hilt)
+  kapt(Deps.hiltCompiler)
 
-  implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
+  implementation(platform(Deps.firebaseBom))
 
-  implementation("com.google.firebase:firebase-analytics-ktx")
-  implementation("com.google.firebase:firebase-crashlytics-ktx")
-  implementation("com.google.firebase:firebase-config-ktx")
-  implementation("com.google.firebase:firebase-auth-ktx")
-  implementation("com.google.android.gms:play-services-auth:20.7.0")
-  implementation("com.google.firebase:firebase-messaging-ktx")
-  implementation("com.google.firebase:firebase-firestore-ktx")
-  implementation("com.google.firebase:firebase-storage-ktx")
+  implementation(Deps.firebaseAnalytics)
+  implementation(Deps.firebaseCrashlytics)
+  implementation(Deps.firebaseConfig)
+  implementation(Deps.firebaseAuth)
+  implementation(Deps.playServicesAuth)
+  implementation(Deps.firebaseMessaging)
+  implementation(Deps.firebaseFirestore)
+  implementation(Deps.firebaseStorage)
 
-  implementation("io.reactivex.rxjava3:rxkotlin:3.0.1")
+  implementation(Deps.rxKotlin)
 }
