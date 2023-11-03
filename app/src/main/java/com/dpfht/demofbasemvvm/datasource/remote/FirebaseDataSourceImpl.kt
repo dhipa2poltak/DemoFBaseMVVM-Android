@@ -20,6 +20,7 @@ import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaEntity
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
+import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
 import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
@@ -61,8 +62,8 @@ class FirebaseDataSourceImpl(
   private val context: Context
 ): FirebaseDataSource {
 
-  private val rawConfigs = BehaviorSubject.createDefault("")
-  private val theConfigs: Observable<String> = rawConfigs
+  private val rawConfigs = BehaviorSubject.create<RemoteConfigEntity>()
+  private val theConfigs: Observable<RemoteConfigEntity> = rawConfigs
 
   private val rawLoginState = PublishSubject.create<LoginState>()
   private val theLoginState: Observable<LoginState> = rawLoginState
@@ -178,7 +179,7 @@ class FirebaseDataSourceImpl(
 
   private fun emitConfigs() {
     val titleScreen = remoteConfig.getString(Constants.RemoteConfigs.KEY_CONFIG_TITLE_LOGIN_SCREEN)
-    rawConfigs.onNext(titleScreen)
+    rawConfigs.onNext(RemoteConfigEntity(titleLoginScreen = titleScreen))
   }
 
   override suspend fun isLogin(): Result<Boolean> {
@@ -213,7 +214,7 @@ class FirebaseDataSourceImpl(
     return VoidResult.Success
   }
 
-  override fun getStreamConfigs(): Observable<String> {
+  override fun getStreamConfigs(): Observable<RemoteConfigEntity> {
     return theConfigs
   }
 

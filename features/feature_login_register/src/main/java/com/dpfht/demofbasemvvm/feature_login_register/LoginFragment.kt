@@ -42,7 +42,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
       }
     }
 
-    viewModel.configData.observe(viewLifecycleOwner) {
+    viewModel.titleData.observe(viewLifecycleOwner) {
       if (it.isNotEmpty()) {
         binding.tvTitleScreen.text = it
       }

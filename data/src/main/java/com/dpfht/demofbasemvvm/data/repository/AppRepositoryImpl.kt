@@ -9,6 +9,7 @@ import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PostFCMMessageDomain
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
+import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
 import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
@@ -32,7 +33,7 @@ class AppRepositoryImpl(
     return firebaseDataSource.fetchConfigs()
   }
 
-  override fun getStreamConfigs(): Observable<String> {
+  override fun getStreamConfigs(): Observable<RemoteConfigEntity> {
     return firebaseDataSource.getStreamConfigs()
   }
 

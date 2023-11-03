@@ -41,8 +41,8 @@ class LoginViewModel @Inject constructor(
   private val _modalMessage = MutableLiveData<String>()
   val modalMessage: LiveData<String> = _modalMessage
 
-  private val _configData = MutableLiveData<String>()
-  val configData: LiveData<String> = _configData
+  private val _titleData = MutableLiveData<String>()
+  val titleData: LiveData<String> = _titleData
 
   private val _doEnterVerificationCode = MutableLiveData(false)
   val doEnterVerificationCode: LiveData<Boolean> = _doEnterVerificationCode
@@ -60,9 +60,7 @@ class LoginViewModel @Inject constructor(
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe {
-          if (it.isNotEmpty()) {
-            _configData.postValue(it)
-          }
+          _titleData.postValue(it.titleLoginScreen)
         }
     )
 

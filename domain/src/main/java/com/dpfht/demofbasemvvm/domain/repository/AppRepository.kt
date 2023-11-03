@@ -5,6 +5,7 @@ import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PostFCMMessageDomain
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
+import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
 import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
@@ -18,7 +19,7 @@ interface AppRepository {
 
   suspend fun fetchConfigs(): VoidResult
 
-  fun getStreamConfigs(): Observable<String>
+  fun getStreamConfigs(): Observable<RemoteConfigEntity>
 
   suspend fun signInWithGoogle(): VoidResult
 

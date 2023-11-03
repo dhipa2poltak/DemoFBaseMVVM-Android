@@ -4,6 +4,7 @@ import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
+import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
 import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
@@ -14,7 +15,7 @@ interface FirebaseDataSource {
   suspend fun isLogin(): Result<Boolean>
   suspend fun logEvent(eventName: String, param: Map<String, String>): VoidResult
   suspend fun fetchConfigs(): VoidResult
-  fun getStreamConfigs(): Observable<String>
+  fun getStreamConfigs(): Observable<RemoteConfigEntity>
   suspend fun signInWithGoogle(): VoidResult
   fun getStreamLoginState(): Observable<LoginState>
   suspend fun logout(): VoidResult
