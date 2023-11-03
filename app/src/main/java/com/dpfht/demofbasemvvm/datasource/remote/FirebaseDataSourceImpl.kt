@@ -670,6 +670,7 @@ class FirebaseDataSourceImpl(
     rawStateErrorConfigs.onNext("")
     rawFCMQuota.onNext(Result.Success(-1))
     rawBookState.onNext(BookState.None)
+    rawConfigs.onNext(RemoteConfigEntity())
 
     verificationInProgress = false
     storedVerificationId = ""

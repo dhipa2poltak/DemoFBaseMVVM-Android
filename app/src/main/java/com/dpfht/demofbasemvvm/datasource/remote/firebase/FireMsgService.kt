@@ -34,7 +34,7 @@ class FireMsgService : FirebaseMessagingService() {
     itn.putExtra(Constants.ExtraParamName.EXTRA_MESSAGE, body ?: "")
     LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(itn)
 
-    //showNotification(title, body)
+    showNotification(title, body)
   }
 
   override fun onNewToken(token: String) {
@@ -50,8 +50,6 @@ class FireMsgService : FirebaseMessagingService() {
     val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     val notificationIntent = Intent(this, MainActivity::class.java)
-    //notificationIntent.setAction(Intent.ACTION_MAIN)
-    //notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
     notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //or Intent.FLAG_ACTIVITY_CLEAR_TASK
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -66,23 +64,12 @@ class FireMsgService : FirebaseMessagingService() {
       .setAutoCancel(true)
 
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
-
-
-      /*
-            AudioAttributes att = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                .build();
-            */
-
       val chan = NotificationChannel(notificationChannelId, channelName, NotificationManager.IMPORTANCE_HIGH)
       chan.enableLights(true)
       chan.lightColor = Color.BLUE
       chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
       chan.setSound(defaultSoundUri, null)
       chan.description = body
-      //chan.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-      //chan.enableVibration(true);
 
       notificationManager.createNotificationChannel(chan)
     }
