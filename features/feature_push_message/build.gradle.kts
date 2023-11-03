@@ -39,6 +39,7 @@ dependencies {
 
   implementation(project(":framework"))
   implementation(project(":domain"))
+
   implementation(Deps.coreKtx)
   implementation(Deps.appCompat)
   implementation(Deps.material)
@@ -54,7 +55,4 @@ dependencies {
 
   implementation(Deps.rxKotlin)
   implementation(Deps.rxAndroid)
-
-  implementation(Deps.navigationFragment)
-  implementation(Deps.navigationUi)
 }

@@ -40,6 +40,7 @@ dependencies {
 
   implementation(project(":domain"))
   implementation(project(":data"))
+
   implementation(Deps.coreKtx)
   implementation(Deps.appCompat)
   implementation(Deps.material)

@@ -39,6 +39,7 @@ dependencies {
 
   implementation(project(":framework"))
   implementation(project(":domain"))
+
   implementation(Deps.coreKtx)
   implementation(Deps.appCompat)
   implementation(Deps.material)

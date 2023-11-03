@@ -9,4 +9,5 @@ interface NavigationService {
   fun navigateInHomeToAddBook()
   fun navigateInHomeFromDetailsToEditBook(book: BookEntity)
   fun navigateInHomeToBookDetails(bookId: String)
+  fun navigateUp()
 }

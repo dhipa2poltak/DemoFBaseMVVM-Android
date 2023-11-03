@@ -80,4 +80,8 @@ class NavigationServiceImpl(
         .fromUri(builder.build())
         .build())
   }
+
+  override fun navigateUp() {
+    navController.navigateUp()
+  }
 }

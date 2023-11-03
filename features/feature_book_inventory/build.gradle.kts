@@ -56,8 +56,5 @@ dependencies {
   implementation(Deps.rxKotlin)
   implementation(Deps.rxAndroid)
 
-  implementation(Deps.navigationFragment)
-  implementation(Deps.navigationUi)
-
   implementation(Deps.picasso)
 }

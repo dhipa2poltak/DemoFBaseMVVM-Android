@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.feature_book_inventory.R
 import com.dpfht.demofbasemvvm.feature_book_inventory.databinding.FragmentBookDetailsBinding
@@ -57,7 +56,7 @@ class BookDetailsFragment : BaseFragment<FragmentBookDetailsBinding>(R.layout.fr
 
     viewModel.closeScreenData.observe(viewLifecycleOwner) { isClose ->
       if (isClose) {
-        findNavController().navigateUp()
+        navigationService.navigateUp()
       }
     }
   }
