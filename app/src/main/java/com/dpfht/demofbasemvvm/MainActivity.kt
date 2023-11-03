@@ -13,12 +13,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+  companion object {
+    lateinit var instance: MainActivity
+  }
+
   internal lateinit var binding: ActivityMainBinding
   private lateinit var navController: NavController
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
     instance = this
+    super.onCreate(savedInstanceState)
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
 
@@ -51,9 +55,5 @@ class MainActivity : AppCompatActivity() {
 
   private fun generateCrash() {
     throw RuntimeException("Generated Crash")
-  }
-
-  companion object {
-    lateinit var instance: MainActivity
   }
 }
