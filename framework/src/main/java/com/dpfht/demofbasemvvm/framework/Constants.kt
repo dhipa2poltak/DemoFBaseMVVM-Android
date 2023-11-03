@@ -10,8 +10,7 @@ object Constants {
 
     const val PATH_FCM_SEND = "fcm/send"
 
-    private const val FCM_SERVER_KEY = "AAAAT3NZZf8:APA91bGpJdaIsebW_bTT8I1wvAhYwlReiQFGOcI7PBULeqy65SOqp3h7k6PSYdHFNresiZeULF8zZMWe6s_-ulYgzlZMsj5YUy8YyVhWMk24lkdYfAAoAl9OxrXNr_mvxl0IVOFoeKX5"
-    const val HEADER_AUTHORIZATION_VALUE = "key=${FCM_SERVER_KEY}"
+    const val HEADER_AUTHORIZATION_VALUE = "key=${Configs.FCMConfig.FCM_SERVER_KEY}"
   }
 
   object BroadcastTagName {
@@ -25,7 +24,7 @@ object Constants {
     const val EXTRA_FCM_TOKEN = "fcm_token"
   }
 
-  object Configs {
+  object RemoteConfigs {
     const val KEY_CONFIG_TITLE_LOGIN_SCREEN = "title_login_screen"
   }
 

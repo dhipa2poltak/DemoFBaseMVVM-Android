@@ -106,7 +106,7 @@ class FirebaseDataSourceImpl(
       override fun onUpdate(configUpdate: ConfigUpdate) {
         //Log.d("Demo Firebase", "Updated keys: " + configUpdate.updatedKeys)
 
-        if (configUpdate.updatedKeys.contains(Constants.Configs.KEY_CONFIG_TITLE_LOGIN_SCREEN)) {
+        if (configUpdate.updatedKeys.contains(Constants.RemoteConfigs.KEY_CONFIG_TITLE_LOGIN_SCREEN)) {
           remoteConfig.activate().addOnCompleteListener {
             emitConfigs()
           }
@@ -177,7 +177,7 @@ class FirebaseDataSourceImpl(
   }
 
   private fun emitConfigs() {
-    val titleScreen = remoteConfig.getString(Constants.Configs.KEY_CONFIG_TITLE_LOGIN_SCREEN)
+    val titleScreen = remoteConfig.getString(Constants.RemoteConfigs.KEY_CONFIG_TITLE_LOGIN_SCREEN)
     rawConfigs.onNext(titleScreen)
   }
 
