@@ -12,21 +12,55 @@ android {
   compileSdk = ConfigData.compileSdkVersion
 
   defaultConfig {
-    applicationId = "com.dpfht.demofbasemvvm"
     minSdk = ConfigData.minSdkVersion
     targetSdk = ConfigData.targetSdkVersion
-    versionCode = 1
-    versionName = "1.0"
-
+    
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
     release {
-      isMinifyEnabled = false
+      isMinifyEnabled = true
+      isShrinkResources = true
+
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+      manifestPlaceholders["appNameSuffix"] = ""
+      resValue("string", "running_mode", "")
+    }
+    debug {
+      isMinifyEnabled = false
+      isShrinkResources = false
+
+      applicationIdSuffix = ".debug"
+      versionNameSuffix = "-debug"
+
+      manifestPlaceholders["appNameSuffix"] = "-(debug)"
+      resValue("string", "running_mode", "-(debug)")
     }
   }
+
+  flavorDimensions.add("default")
+
+  productFlavors {
+    create("prod") {
+      applicationId = "com.dpfht.demofbasemvvm"
+      versionCode = ConfigData.versionCode
+      versionName = ConfigData.versionName
+
+      manifestPlaceholders["appName"] = "Demo FBase MVVM"
+      resValue("string", "app_name", "Demo FBase MVVM")
+    }
+    create("dev") {
+      applicationId = "com.dpfht.demofbasemvvm.dev"
+      versionCode = ConfigData.versionCodeDev
+      versionName = ConfigData.versionNameDev
+
+      manifestPlaceholders["appName"] = "Demo FBase MVVM (DEV)"
+      resValue("string", "app_name", "Demo FBase MVVM (DEV)")
+    }
+  }
+
   buildFeatures {
     buildConfig = true
     viewBinding = true

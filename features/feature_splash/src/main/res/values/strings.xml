@@ -1,5 +1,5 @@
 <resources>
+  <string name="splash_app_name">Demo FBase MVVM</string>
   <string name="splash_text_loading">loading…</string>
-
   <string name="splash_image_desc_logo">splash logo</string>
 </resources>
