@@ -6,13 +6,12 @@ import com.dpfht.demofbasemvvm.data.model.remote.request.Data
 import com.dpfht.demofbasemvvm.data.model.remote.request.PostFCMMessageBodyRequest
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
+import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PostFCMMessageDomain
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
 import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
-import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
-import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import com.dpfht.demofbasemvvm.domain.repository.AppRepository
 import io.reactivex.rxjava3.core.Observable
 
@@ -21,15 +20,15 @@ class AppRepositoryImpl(
   private val restDataSource: RestDataSource
 ): AppRepository {
 
-  override suspend fun isLogin(): Result<Boolean> {
+  override suspend fun isLogin(): Boolean {
     return firebaseDataSource.isLogin()
   }
 
-  override suspend fun logEvent(eventName: String, param: Map<String, String>): VoidResult {
+  override suspend fun logEvent(eventName: String, param: Map<String, String>) {
     return firebaseDataSource.logEvent(eventName, param)
   }
 
-  override suspend fun fetchConfigs(): VoidResult {
+  override suspend fun fetchConfigs() {
     return firebaseDataSource.fetchConfigs()
   }
 
@@ -37,7 +36,7 @@ class AppRepositoryImpl(
     return firebaseDataSource.getStreamConfigs()
   }
 
-  override suspend fun signInWithGoogle(): VoidResult {
+  override suspend fun signInWithGoogle() {
     return firebaseDataSource.signInWithGoogle()
   }
 
@@ -45,23 +44,23 @@ class AppRepositoryImpl(
     return firebaseDataSource.getStreamLoginState()
   }
 
-  override suspend fun logout(): VoidResult {
+  override suspend fun logout() {
     return firebaseDataSource.logout()
   }
 
-  override suspend fun startPhoneNumberVerification(phoneNumber: String): VoidResult {
+  override suspend fun startPhoneNumberVerification(phoneNumber: String) {
     return firebaseDataSource.startPhoneNumberVerification(phoneNumber)
   }
 
-  override suspend fun verifyPhoneNumberWithCode(code: String): VoidResult {
+  override suspend fun verifyPhoneNumberWithCode(code: String) {
     return firebaseDataSource.verifyPhoneNumberWithCode(code)
   }
 
-  override suspend fun resendVerificationCode(): VoidResult {
+  override suspend fun resendVerificationCode() {
     return firebaseDataSource.resendVerificationCode()
   }
 
-  override suspend fun getUserProfile(): Result<UserProfileEntity> {
+  override suspend fun getUserProfile(): UserProfileEntity {
     return firebaseDataSource.getUserProfile()
   }
 
@@ -73,23 +72,23 @@ class AppRepositoryImpl(
     return firebaseDataSource.getStreamFCMToken()
   }
 
-  override suspend fun fetchFCMToken(): VoidResult {
+  override suspend fun fetchFCMToken() {
     return firebaseDataSource.fetchFCMToken()
   }
 
-  override suspend fun postFCMMessage(to: String, title: String, message: String): Result<PostFCMMessageDomain> {
+  override suspend fun postFCMMessage(to: String, title: String, message: String): PostFCMMessageDomain {
     return restDataSource.postFCMMessage(PostFCMMessageBodyRequest(to, Data(title, message)))
   }
 
-  override fun getStreamFCMQuota(): Observable<Result<Int>> {
+  override fun getStreamFCMQuota(): Observable<FCMQuotaState> {
     return firebaseDataSource.getStreamFCMQuota()
   }
 
-  override suspend fun fetchFCMQuota(): VoidResult {
+  override suspend fun fetchFCMQuota() {
     return firebaseDataSource.fetchFCMQuota()
   }
 
-  override suspend fun setFCMQuota(count: Int): VoidResult {
+  override suspend fun setFCMQuota(count: Int) {
     return firebaseDataSource.setFCMQuota(count)
   }
 
@@ -97,23 +96,23 @@ class AppRepositoryImpl(
     return firebaseDataSource.getStreamBookState()
   }
 
-  override suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult {
+  override suspend fun addBook(book: BookEntity, uriStringImage: String) {
     return firebaseDataSource.addBook(book, uriStringImage)
   }
 
-  override suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult {
+  override suspend fun updateBook(book: BookEntity, uriStringImage: String) {
     return firebaseDataSource.updateBook(book, uriStringImage)
   }
 
-  override suspend fun deleteBook(book: BookEntity): VoidResult {
+  override suspend fun deleteBook(book: BookEntity) {
     return firebaseDataSource.deleteBook(book)
   }
 
-  override suspend fun getAllBooks(): VoidResult {
+  override suspend fun getAllBooks() {
     return firebaseDataSource.getAllBooks()
   }
 
-  override suspend fun getBook(bookId: String): VoidResult {
+  override suspend fun getBook(bookId: String) {
     return firebaseDataSource.getBook(bookId)
   }
 }

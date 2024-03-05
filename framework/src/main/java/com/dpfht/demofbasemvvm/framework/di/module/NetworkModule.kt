@@ -1,5 +1,6 @@
 package com.dpfht.demofbasemvvm.framework.di.module
 
+import android.content.Context
 import com.dpfht.demofbasemvvm.data.datasource.RestDataSource
 import com.dpfht.demofbasemvvm.framework.BuildConfig
 import com.dpfht.demofbasemvvm.framework.Constants
@@ -9,6 +10,7 @@ import com.dpfht.demofbasemvvm.framework.data.datasource.remote.RestDataSourceIm
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -63,7 +65,7 @@ class NetworkModule {
 
   @Provides
   @Singleton
-  fun provideRestDataSource(restService: RestService): RestDataSource {
-    return RestDataSourceImpl(restService)
+  fun provideRestDataSource(@ApplicationContext context: Context, restService: RestService): RestDataSource {
+    return RestDataSourceImpl(context, restService)
   }
 }

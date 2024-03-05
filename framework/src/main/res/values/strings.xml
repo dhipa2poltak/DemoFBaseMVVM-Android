@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <string name="framework_text_error_connection">error in connection</string>
+  <string name="framework_text_http_error">http error</string>
+  <string name="framework_text_error_conversion">error in conversion</string>
 </resources>

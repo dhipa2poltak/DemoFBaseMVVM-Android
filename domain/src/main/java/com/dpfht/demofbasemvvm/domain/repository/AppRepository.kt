@@ -2,49 +2,48 @@ package com.dpfht.demofbasemvvm.domain.repository
 
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
+import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PostFCMMessageDomain
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
 import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
-import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
-import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import io.reactivex.rxjava3.core.Observable
 
 interface AppRepository {
 
-  suspend fun isLogin(): Result<Boolean>
+  suspend fun isLogin(): Boolean
 
-  suspend fun logEvent(eventName: String, param: Map<String, String>): VoidResult
+  suspend fun logEvent(eventName: String, param: Map<String, String>)
 
-  suspend fun fetchConfigs(): VoidResult
+  suspend fun fetchConfigs()
 
   fun getStreamConfigs(): Observable<RemoteConfigEntity>
 
-  suspend fun signInWithGoogle(): VoidResult
+  suspend fun signInWithGoogle()
 
   fun getStreamLoginState(): Observable<LoginState>
 
-  suspend fun logout(): VoidResult
+  suspend fun logout()
 
-  suspend fun startPhoneNumberVerification(phoneNumber: String): VoidResult
-  suspend fun verifyPhoneNumberWithCode(code: String): VoidResult
-  suspend fun resendVerificationCode(): VoidResult
+  suspend fun startPhoneNumberVerification(phoneNumber: String)
+  suspend fun verifyPhoneNumberWithCode(code: String)
+  suspend fun resendVerificationCode()
 
-  suspend fun getUserProfile(): Result<UserProfileEntity>
+  suspend fun getUserProfile(): UserProfileEntity
   fun getStreamPushMessage(): Observable<PushMessageEntity>
   fun getStreamFCMToken(): Observable<String>
-  suspend fun fetchFCMToken(): VoidResult
-  suspend fun postFCMMessage(to: String, title: String, message: String): Result<PostFCMMessageDomain>
+  suspend fun fetchFCMToken()
+  suspend fun postFCMMessage(to: String, title: String, message: String): PostFCMMessageDomain
 
-  fun getStreamFCMQuota(): Observable<Result<Int>>
-  suspend fun fetchFCMQuota(): VoidResult
-  suspend fun setFCMQuota(count: Int): VoidResult
+  fun getStreamFCMQuota(): Observable<FCMQuotaState>
+  suspend fun fetchFCMQuota()
+  suspend fun setFCMQuota(count: Int)
 
   fun getStreamBookState(): Observable<BookState>
-  suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult
-  suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult
-  suspend fun deleteBook(book: BookEntity): VoidResult
-  suspend fun getAllBooks(): VoidResult
-  suspend fun getBook(bookId: String): VoidResult
+  suspend fun addBook(book: BookEntity, uriStringImage: String)
+  suspend fun updateBook(book: BookEntity, uriStringImage: String)
+  suspend fun deleteBook(book: BookEntity)
+  suspend fun getAllBooks()
+  suspend fun getBook(bookId: String)
 }

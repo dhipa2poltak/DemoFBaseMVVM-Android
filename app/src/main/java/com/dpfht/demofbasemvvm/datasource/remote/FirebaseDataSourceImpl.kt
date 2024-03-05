@@ -15,15 +15,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dpfht.demofbasemvvm.MainActivity
 import com.dpfht.demofbasemvvm.R
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseDataSource
+import com.dpfht.demofbasemvvm.domain.entity.AppException
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaEntity
+import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
 import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
-import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
-import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import com.dpfht.demofbasemvvm.framework.Constants
 import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -79,8 +79,8 @@ class FirebaseDataSourceImpl(
 
   private val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
 
-  private val rawFCMQuota = PublishSubject.create<Result<Int>>()
-  private val theFCMQuota: Observable<Result<Int>> = rawFCMQuota
+  private val rawFCMQuota = PublishSubject.create<FCMQuotaState>()
+  private val theFCMQuota: Observable<FCMQuotaState> = rawFCMQuota
 
   private val rawBookState = PublishSubject.create<BookState>()
   private val theBookState: Observable<BookState> = rawBookState
@@ -182,14 +182,14 @@ class FirebaseDataSourceImpl(
     rawConfigs.onNext(RemoteConfigEntity(titleLoginScreen = titleScreen))
   }
 
-  override suspend fun isLogin(): Result<Boolean> {
+  override suspend fun isLogin(): Boolean {
     val auth = FirebaseAuth.getInstance()
     val currentUser = auth.currentUser
 
-    return Result.Success(currentUser != null)
+    return currentUser != null
   }
 
-  override suspend fun logEvent(eventName: String, param: Map<String, String>): VoidResult {
+  override suspend fun logEvent(eventName: String, param: Map<String, String>) {
     val bundle = Bundle()
 
     for (key in param.keys) {
@@ -198,11 +198,9 @@ class FirebaseDataSourceImpl(
 
     val firebaseAnalytics = Firebase.analytics
     firebaseAnalytics.logEvent(eventName, bundle)
-
-    return VoidResult.Success
   }
 
-  override suspend fun fetchConfigs(): VoidResult {
+  override suspend fun fetchConfigs() {
     remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
       if (!task.isSuccessful) {
         rawStateErrorConfigs.onNext("failed to fetch remote config")
@@ -210,8 +208,6 @@ class FirebaseDataSourceImpl(
 
       emitConfigs()
     }
-
-    return VoidResult.Success
   }
 
   override fun getStreamConfigs(): Observable<RemoteConfigEntity> {
@@ -222,7 +218,7 @@ class FirebaseDataSourceImpl(
     return theLoginState
   }
 
-  override suspend fun signInWithGoogle(): VoidResult {
+  override suspend fun signInWithGoogle() {
     this.phoneNumber = ""
 
     val signInRequest = GetSignInIntentRequest.builder()
@@ -237,8 +233,6 @@ class FirebaseDataSourceImpl(
         //Log.e("DemoFirebase", "Google Sign-in failed", e)
         rawLoginState.onNext(LoginState.Error("Google Sign-in failed $e"))
       }
-
-    return VoidResult.Success
   }
 
   private fun launchSignIn(pendingIntent: PendingIntent) {
@@ -285,7 +279,7 @@ class FirebaseDataSourceImpl(
     }
   }
 
-  override suspend fun logout(): VoidResult {
+  override suspend fun logout() {
     Firebase.auth.signOut()
 
     try {
@@ -301,11 +295,9 @@ class FirebaseDataSourceImpl(
       rawLoginState.onNext(LoginState.Logout)
       reset()
     }
-
-    return VoidResult.Success
   }
 
-  override suspend fun startPhoneNumberVerification(phoneNumber: String): VoidResult {
+  override suspend fun startPhoneNumberVerification(phoneNumber: String) {
     this.phoneNumber = phoneNumber
 
     val auth = Firebase.auth
@@ -318,21 +310,17 @@ class FirebaseDataSourceImpl(
     PhoneAuthProvider.verifyPhoneNumber(options)
 
     verificationInProgress = true
-
-    return VoidResult.Success
   }
 
-  override suspend fun verifyPhoneNumberWithCode(code: String): VoidResult {
+  override suspend fun verifyPhoneNumberWithCode(code: String) {
     val verificationId = storedVerificationId
     verificationId?.let {
       val credential = PhoneAuthProvider.getCredential(verificationId, code)
       signInWithPhoneAuthCredential(credential)
     }
-
-    return VoidResult.Success
   }
 
-  override suspend fun resendVerificationCode(): VoidResult {
+  override suspend fun resendVerificationCode() {
     val token = resendToken
     val auth = Firebase.auth
     val optionsBuilder = PhoneAuthOptions.newBuilder(auth)
@@ -345,8 +333,6 @@ class FirebaseDataSourceImpl(
       optionsBuilder.setForceResendingToken(token) // callback's ForceResendingToken
     //}
     PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build())
-
-    return VoidResult.Success
   }
 
   private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
@@ -368,21 +354,21 @@ class FirebaseDataSourceImpl(
     }
   }
 
-  override suspend fun getUserProfile(): Result<UserProfileEntity> {
+  override suspend fun getUserProfile(): UserProfileEntity {
     val auth = Firebase.auth
     val currentUser = auth.currentUser
 
     currentUser?.let {
-      return Result.Success(UserProfileEntity(
+      return UserProfileEntity(
         currentUser.uid,
         currentUser.displayName ?: "",
         currentUser.email ?: "",
         currentUser.phoneNumber ?: "",
         currentUser.photoUrl.toString()
-      ))
+      )
     }
 
-    return Result.Error("can't get user profile")
+    throw AppException("can't get user profile")
   }
 
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
@@ -393,7 +379,7 @@ class FirebaseDataSourceImpl(
     return theFCMToken
   }
 
-  override suspend fun fetchFCMToken(): VoidResult {
+  override suspend fun fetchFCMToken() {
     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
       if (!task.isSuccessful) {
         return@addOnCompleteListener
@@ -402,15 +388,13 @@ class FirebaseDataSourceImpl(
       val token = task.result
       rawFCMToken.onNext(token)
     }
-
-    return VoidResult.Success
   }
 
-  override fun getStreamFCMQuota(): Observable<Result<Int>> {
+  override fun getStreamFCMQuota(): Observable<FCMQuotaState> {
     return theFCMQuota
   }
 
-  override suspend fun fetchFCMQuota(): VoidResult {
+  override suspend fun fetchFCMQuota() {
     val uid = Firebase.auth.currentUser?.uid
     if (uid != null) {
       val docRef = Firebase.firestore.collection("fcm_quotas").document(uid)
@@ -426,11 +410,11 @@ class FirebaseDataSourceImpl(
 
             if (todayTimeInMillis != null && savedTimeInMillis != null) {
               if (todayTimeInMillis > savedTimeInMillis) {
-                rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
+                rawFCMQuota.onNext(FCMQuotaState.QuotaCount(Constants.FCM.MAX_QUOTA_PER_DAY))
               } else if (todayTimeInMillis == savedTimeInMillis) {
-                rawFCMQuota.onNext(Result.Success(fcmQuota.quota))
+                rawFCMQuota.onNext(FCMQuotaState.QuotaCount(fcmQuota.quota))
               } else {
-                rawFCMQuota.onNext(Result.Success(0))
+                rawFCMQuota.onNext(FCMQuotaState.QuotaCount(0))
               }
 
               return@addOnSuccessListener
@@ -438,20 +422,22 @@ class FirebaseDataSourceImpl(
           }
         }
 
-        rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
-      }.addOnFailureListener { e ->
-        rawFCMQuota.onNext(Result.Error(e.message ?: "failed to fetch FCM Quota"))
-        rawFCMQuota.onNext(Result.Success(0))
+        rawFCMQuota.onNext(FCMQuotaState.QuotaCount(Constants.FCM.MAX_QUOTA_PER_DAY))
+      }.addOnFailureListener { _ ->
+        //rawFCMQuota.onNext(0)
+        //throw AppException("failed to fetch FCM Quota")
+        rawFCMQuota.onNext(FCMQuotaState.Error("failed to fetch FCM Quota"))
       }
 
-      return VoidResult.Success
+      return
     }
 
-    rawFCMQuota.onNext(Result.Success(0))
-    return VoidResult.Error("failed to fetch FCM Quota because no uid")
+    //rawFCMQuota.onNext(0)
+    //throw AppException("failed to fetch FCM Quota because no uid")
+    rawFCMQuota.onNext(FCMQuotaState.Error("failed to fetch FCM Quota because no uid"))
   }
 
-  override suspend fun setFCMQuota(count: Int): VoidResult {
+  override suspend fun setFCMQuota(count: Int) {
     val uid = Firebase.auth.currentUser?.uid
     if (uid != null) {
       val formatterDate = SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN)
@@ -459,24 +445,26 @@ class FirebaseDataSourceImpl(
       val entity = FCMQuotaEntity(strNow, count)
 
       Firebase.firestore.collection("fcm_quotas").document(uid).set(entity).addOnSuccessListener {
-        rawFCMQuota.onNext(Result.Success(count))
-      }.addOnFailureListener { e ->
-        rawFCMQuota.onNext(Result.Success(count))
-        rawFCMQuota.onNext(Result.Error(e.message ?: "failed to set FCM Quota"))
+        rawFCMQuota.onNext(FCMQuotaState.QuotaCount(count))
+      }.addOnFailureListener { _ ->
+        //rawFCMQuota.onNext(count)
+        //throw AppException("failed to set FCM Quota")
+        rawFCMQuota.onNext(FCMQuotaState.Error("failed to set FCM Quota"))
       }
 
-      return VoidResult.Success
+      return
     }
 
-    rawFCMQuota.onNext(Result.Success(count))
-    return VoidResult.Error("failed to set FCM Quota because no uid")
+    //rawFCMQuota.onNext(count)
+    //throw AppException("failed to set FCM Quota because no uid")
+    rawFCMQuota.onNext(FCMQuotaState.Error("failed to set FCM Quota because no uid"))
   }
 
   override fun getStreamBookState(): Observable<BookState> {
     return theBookState
   }
 
-  override suspend fun addBook(book: BookEntity, uriStringImage: String): VoidResult {
+  override suspend fun addBook(book: BookEntity, uriStringImage: String) {
     val uid = Firebase.auth.currentUser?.uid
 
     if (uid != null) {
@@ -509,17 +497,17 @@ class FirebaseDataSourceImpl(
         rawBookState.onNext(BookState.ErrorAddBook("file extension is empty or stream is null, failed to add the book"))
       }
 
-      return VoidResult.Success
+      return
     }
 
-    return VoidResult.Error("failed to add book because no uid")
+    throw AppException("failed to add book because no uid")
   }
 
   private fun getFileExtension(uri: Uri): String {
     return MimeTypeMap.getSingleton().getExtensionFromMimeType(context.contentResolver.getType(uri)) ?: ""
   }
 
-  override suspend fun updateBook(book: BookEntity, uriStringImage: String): VoidResult {
+  override suspend fun updateBook(book: BookEntity, uriStringImage: String) {
     if (uriStringImage.isNotEmpty()) {
       val uriImage = Uri.parse(uriStringImage)
       val stream = context.contentResolver.openInputStream(uriImage)
@@ -574,11 +562,9 @@ class FirebaseDataSourceImpl(
         rawBookState.onNext(BookState.ErrorUpdateBook("Failed to update the book"))
       }
     }
-
-    return VoidResult.Success
   }
 
-  override suspend fun deleteBook(book: BookEntity): VoidResult {
+  override suspend fun deleteBook(book: BookEntity) {
     val pathInServer = book.pathImageInServer
     val storageRef = Firebase.storage.reference.child(pathInServer)
     storageRef.delete().addOnSuccessListener {
@@ -598,11 +584,9 @@ class FirebaseDataSourceImpl(
         rawBookState.onNext(BookState.ErrorDeleteBook("Failed to delete the book"))
       }
     }
-
-    return VoidResult.Success
   }
 
-  override suspend fun getAllBooks(): VoidResult {
+  override suspend fun getAllBooks() {
     val uid = Firebase.auth.currentUser?.uid
 
     if (uid != null) {
@@ -628,13 +612,13 @@ class FirebaseDataSourceImpl(
         //rawBookState.onNext(BookState.ErrorGetAllBooks("Failed to get all books data"))
       }
 
-      return VoidResult.Success
+      return
     }
 
-    return VoidResult.Error("Failed to get all books because no uid")
+    throw AppException("Failed to get all books because no uid")
   }
 
-  override suspend fun getBook(bookId: String): VoidResult {
+  override suspend fun getBook(bookId: String) {
     val uid = Firebase.auth.currentUser?.uid
 
     if (uid != null) {
@@ -656,10 +640,10 @@ class FirebaseDataSourceImpl(
         rawBookState.onNext(BookState.ErrorGetBook("Failed to get book data"))
       }
 
-      return VoidResult.Success
+      return
     }
 
-    return VoidResult.Error("Failed to get book data because no uid")
+    throw AppException("Failed to get book data because no uid")
   }
 
   private fun reset() {
@@ -668,7 +652,7 @@ class FirebaseDataSourceImpl(
     rawReceivedPushMessage.onNext(PushMessageEntity())
     rawFCMToken.onNext("")
     rawStateErrorConfigs.onNext("")
-    rawFCMQuota.onNext(Result.Success(-1))
+    rawFCMQuota.onNext(FCMQuotaState.QuotaCount(-1))
     rawBookState.onNext(BookState.None)
     rawConfigs.onNext(RemoteConfigEntity())
 

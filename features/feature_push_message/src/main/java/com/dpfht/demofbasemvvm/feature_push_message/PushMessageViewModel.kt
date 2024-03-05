@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
 import com.dpfht.demofbasemvvm.domain.entity.Result
 import com.dpfht.demofbasemvvm.domain.entity.Result.Error
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
@@ -80,18 +81,18 @@ class PushMessageViewModel @Inject constructor(
       getStreamFCMQuotaUseCase()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe { result ->
-          when (result) {
-            is Result.Success -> {
-              quotaCount = result.value
+        .subscribe { state ->
+          when (state) {
+            is FCMQuotaState.QuotaCount -> {
+              quotaCount = state.value
               if (quotaCount != -1) {
                 _isShowDialogLoading.postValue(false)
                 _fcmQuotaData.postValue(quotaCount)
               }
             }
-            is Error -> {
+            is FCMQuotaState.Error -> {
               _isShowDialogLoading.postValue(false)
-              _modalMessage.postValue(result.message)
+              _modalMessage.postValue(state.message)
             }
           }
         }
