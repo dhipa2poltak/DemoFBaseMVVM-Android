@@ -1,11 +1,11 @@
 object Deps {
-  val coreKtx = "androidx.core:core-ktx:${Versions.coreKtx}"
-  val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
-  val material = "com.google.android.material:material:${Versions.material}"
-  val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
-  val jUnit = "junit:junit:${Versions.jUnit}"
-  val jUnitExt = "androidx.test.ext:junit:${Versions.jUnitExt}"
-  val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
+  const val coreKtx = "androidx.core:core-ktx:${Versions.coreKtx}"
+  const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
+  const val material = "com.google.android.material:material:${Versions.material}"
+  const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
+  const val jUnit = "junit:junit:${Versions.jUnit}"
+  const val jUnitExt = "androidx.test.ext:junit:${Versions.jUnitExt}"
+  const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
 
   const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.navigationFragment}"
   const val navigationUi = "androidx.navigation:navigation-ui-ktx:${Versions.navigationUi}"
