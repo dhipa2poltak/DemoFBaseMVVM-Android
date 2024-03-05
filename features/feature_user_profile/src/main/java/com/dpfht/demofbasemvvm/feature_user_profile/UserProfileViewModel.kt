@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.Result
+import com.dpfht.demofbasemvvm.domain.entity.Result.Error
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import com.dpfht.demofbasemvvm.domain.usecase.GetStreamLoginStateUseCase
@@ -69,7 +70,7 @@ class UserProfileViewModel @Inject constructor(
         is Result.Success -> {
           onSuccessGetUserProfile(result.value)
         }
-        is Result.ErrorResult -> {
+        is Error -> {
           onErrorGetUserProfile(result.message)
         }
       }

@@ -382,7 +382,7 @@ class FirebaseDataSourceImpl(
       ))
     }
 
-    return Result.ErrorResult("can't get user profile")
+    return Result.Error("can't get user profile")
   }
 
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
@@ -440,7 +440,7 @@ class FirebaseDataSourceImpl(
 
         rawFCMQuota.onNext(Result.Success(Constants.FCM.MAX_QUOTA_PER_DAY))
       }.addOnFailureListener { e ->
-        rawFCMQuota.onNext(Result.ErrorResult(e.message ?: "failed to fetch FCM Quota"))
+        rawFCMQuota.onNext(Result.Error(e.message ?: "failed to fetch FCM Quota"))
         rawFCMQuota.onNext(Result.Success(0))
       }
 
@@ -462,7 +462,7 @@ class FirebaseDataSourceImpl(
         rawFCMQuota.onNext(Result.Success(count))
       }.addOnFailureListener { e ->
         rawFCMQuota.onNext(Result.Success(count))
-        rawFCMQuota.onNext(Result.ErrorResult(e.message ?: "failed to set FCM Quota"))
+        rawFCMQuota.onNext(Result.Error(e.message ?: "failed to set FCM Quota"))
       }
 
       return VoidResult.Success

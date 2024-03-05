@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dpfht.demofbasemvvm.domain.entity.Result
+import com.dpfht.demofbasemvvm.domain.entity.Result.Error
 import com.dpfht.demofbasemvvm.domain.entity.VoidResult
 import com.dpfht.demofbasemvvm.domain.usecase.FetchFCMQuotaUseCase
 import com.dpfht.demofbasemvvm.domain.usecase.FetchFCMTokenUseCase
@@ -88,7 +89,7 @@ class PushMessageViewModel @Inject constructor(
                 _fcmQuotaData.postValue(quotaCount)
               }
             }
-            is Result.ErrorResult -> {
+            is Error -> {
               _isShowDialogLoading.postValue(false)
               _modalMessage.postValue(result.message)
             }
@@ -150,7 +151,7 @@ class PushMessageViewModel @Inject constructor(
             onSuccessPostFCMMessage()
           }
         }
-        is Result.ErrorResult -> {
+        is Error -> {
           onErrorPostFCMMessage(result.message)
         }
       }

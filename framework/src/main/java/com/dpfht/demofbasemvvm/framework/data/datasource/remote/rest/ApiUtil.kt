@@ -2,7 +2,7 @@ package com.dpfht.demofbasemvvm.framework.data.datasource.remote.rest
 
 import com.dpfht.demofbasemvvm.data.model.remote.response.PostFCMMessageResponse
 import com.dpfht.demofbasemvvm.domain.entity.Result
-import com.dpfht.demofbasemvvm.domain.entity.Result.ErrorResult
+import com.dpfht.demofbasemvvm.domain.entity.Result.Error
 import com.dpfht.demofbasemvvm.domain.entity.Result.Success
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -18,15 +18,15 @@ suspend fun <T> safeApiCall(dispatcher: CoroutineDispatcher, apiCall: suspend ()
       Success(apiCall.invoke())
     } catch (t: Throwable) {
       when (t) {
-        is IOException -> ErrorResult("error in connection")
+        is IOException -> Error("error in connection")
         is HttpException -> {
           //val code = t.code()
           val errorResponse = convertErrorBody(t)
 
-          ErrorResult(errorResponse?.results?.get(0)?.error ?: "http error")
+          Error(errorResponse?.results?.get(0)?.error ?: "http error")
         }
         else -> {
-          ErrorResult("error in conversion")
+          Error("error in conversion")
         }
       }
     }

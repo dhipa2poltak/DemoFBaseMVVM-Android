@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dpfht.demofbasemvvm.domain.entity.Result
+import com.dpfht.demofbasemvvm.domain.entity.Result.Error
 import com.dpfht.demofbasemvvm.domain.usecase.IsLoginUseCase
 import com.dpfht.demofbasemvvm.domain.usecase.LogEventUseCase
 import com.dpfht.demofbasemvvm.framework.Constants
@@ -33,7 +34,7 @@ class SplashViewModel @Inject constructor(
         is Result.Success -> {
           onSuccess(result.value)
         }
-        is Result.ErrorResult -> {
+        is Error -> {
           onError(result.message)
         }
       }
