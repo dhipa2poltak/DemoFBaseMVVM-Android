@@ -1,3 +1,12 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+  keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
@@ -11,10 +20,19 @@ android {
   namespace = "com.dpfht.demofbasemvvm"
   compileSdk = ConfigData.compileSdkVersion
 
+  signingConfigs {
+    create("release") {
+      storeFile = file(keystoreProperties["storeFile"] as String)
+      storePassword = keystoreProperties["storePassword"] as String
+      keyAlias = keystoreProperties["keyAlias"] as String
+      keyPassword = keystoreProperties["keyPassword"] as String
+    }
+  }
+
   defaultConfig {
     minSdk = ConfigData.minSdkVersion
     targetSdk = ConfigData.targetSdkVersion
-    
+
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -24,6 +42,8 @@ android {
       isShrinkResources = true
 
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+      signingConfig = signingConfigs["release"]
 
       manifestPlaceholders["appNameSuffix"] = ""
       resValue("string", "running_mode", "")
@@ -50,6 +70,8 @@ android {
 
       manifestPlaceholders["appName"] = "Demo FBase MVVM"
       resValue("string", "app_name", "Demo FBase MVVM")
+
+      buildConfigField("String", "SERVER_KEY", "\"${keystoreProperties["prodServerKey"] as String}\"")
     }
     create("dev") {
       applicationId = "com.dpfht.demofbasemvvm.dev"
@@ -58,6 +80,8 @@ android {
 
       manifestPlaceholders["appName"] = "Demo FBase MVVM (DEV)"
       resValue("string", "app_name", "Demo FBase MVVM (DEV)")
+
+      buildConfigField("String", "SERVER_KEY", "\"${keystoreProperties["devServerKey"] as String}\"")
     }
   }
 

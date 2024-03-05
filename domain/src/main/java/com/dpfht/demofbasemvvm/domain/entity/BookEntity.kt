@@ -1,7 +1,9 @@
 package com.dpfht.demofbasemvvm.domain.entity
 
+import androidx.annotation.Keep
 import java.io.Serializable
 
+@Keep
 data class BookEntity(
   val documentId: String = "",
   val title: String = "",

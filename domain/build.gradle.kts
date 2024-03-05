@@ -10,4 +10,5 @@ java {
 
 dependencies {
   implementation(Deps.rxKotlin)
+  implementation(Deps.annotation)
 }

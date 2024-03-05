@@ -10,7 +10,7 @@ object Constants {
 
     const val PATH_FCM_SEND = "fcm/send"
 
-    const val HEADER_AUTHORIZATION_VALUE = "key=${Configs.FCMConfig.FCM_SERVER_KEY}"
+    var HEADER_AUTHORIZATION_VALUE = "key=${Configs.FCMConfig.FCM_SERVER_KEY}"
   }
 
   object BroadcastTagName {
