@@ -102,13 +102,9 @@ android {
 dependencies {
 
   implementation(project(":framework"))
+  implementation(project(":navigation"))
   implementation(project(":data"))
   implementation(project(":domain"))
-  implementation(project(":features:feature_splash"))
-  implementation(project(":features:feature_login_register"))
-  implementation(project(":features:feature_book_inventory"))
-  implementation(project(":features:feature_push_message"))
-  implementation(project(":features:feature_user_profile"))
 
   implementation(Deps.coreKtx)
   implementation(Deps.appCompat)

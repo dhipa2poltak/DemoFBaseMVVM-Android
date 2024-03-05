@@ -20,7 +20,7 @@
       tools:layout="@layout/fragment_add_edit_book">
 
     <deepLink
-        app:uri="android-app://${applicationId}/add_edit_book_fragment" />
+        app:uri="android-app://com.dpfht.demofbasemvvm/add_edit_book_fragment" />
 
   </fragment>
 
@@ -31,7 +31,7 @@
       tools:layout="@layout/fragment_book_details">
 
     <deepLink
-        app:uri="android-app://${applicationId}/book_details_fragment?book_id={book_id}" />
+        app:uri="android-app://com.dpfht.demofbasemvvm/book_details_fragment?book_id={book_id}" />
 
     <argument
         android:name="book_id"
