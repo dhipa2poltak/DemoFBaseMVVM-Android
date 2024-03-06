@@ -3,25 +3,15 @@ package com.dpfht.demofbasemvvm.data.datasource
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
-import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
 import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
-import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import io.reactivex.rxjava3.core.Observable
 
 interface FirebaseDataSource {
-
-  suspend fun isLogin(): Boolean
   suspend fun logEvent(eventName: String, param: Map<String, String>)
   suspend fun fetchConfigs()
   fun getStreamConfigs(): Observable<RemoteConfigEntity>
-  suspend fun signInWithGoogle()
-  fun getStreamLoginState(): Observable<LoginState>
   suspend fun logout()
-  suspend fun startPhoneNumberVerification(phoneNumber: String)
-  suspend fun verifyPhoneNumberWithCode(code: String)
-  suspend fun resendVerificationCode()
-  suspend fun getUserProfile(): UserProfileEntity
   fun getStreamPushMessage(): Observable<PushMessageEntity>
   fun getStreamFCMToken(): Observable<String>
   suspend fun fetchFCMToken()

@@ -9,26 +9,32 @@ import androidx.core.view.MenuCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.dpfht.demofbasemvvm.data.datasource.FirebaseLoginDataSource
+import com.dpfht.demofbasemvvm.data.repository.AppRepositoryImpl
 import com.dpfht.demofbasemvvm.databinding.ActivityMainBinding
+import com.dpfht.demofbasemvvm.domain.repository.AppRepository
 import com.dpfht.demofbasemvvm.framework.R as frameworkR
 import com.dpfht.demofbasemvvm.navigation.R as navigationR
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-  companion object {
-    lateinit var instance: MainActivity
-  }
 
   private lateinit var binding: ActivityMainBinding
   private lateinit var navController: NavController
 
   private var isAlreadyEnteredHome = false
 
+  @Inject
+  lateinit var appRepository: AppRepository
+
+  @Inject
+  lateinit var firebaseLoginDataSource: FirebaseLoginDataSource
+
   override fun onCreate(savedInstanceState: Bundle?) {
-    instance = this
     super.onCreate(savedInstanceState)
+    (appRepository as AppRepositoryImpl).firebaseLoginDataSource = firebaseLoginDataSource
     binding = ActivityMainBinding.inflate(layoutInflater)
     setContentView(binding.root)
 

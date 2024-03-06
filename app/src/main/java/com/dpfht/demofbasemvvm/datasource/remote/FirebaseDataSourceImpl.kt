@@ -1,18 +1,13 @@
 package com.dpfht.demofbasemvvm.datasource.remote
 
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.MimeTypeMap
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.dpfht.demofbasemvvm.MainActivity
 import com.dpfht.demofbasemvvm.R
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseDataSource
 import com.dpfht.demofbasemvvm.domain.entity.AppException
@@ -20,24 +15,10 @@ import com.dpfht.demofbasemvvm.domain.entity.BookEntity
 import com.dpfht.demofbasemvvm.domain.entity.BookState
 import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaEntity
 import com.dpfht.demofbasemvvm.domain.entity.FCMQuotaState
-import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.PushMessageEntity
 import com.dpfht.demofbasemvvm.domain.entity.RemoteConfigEntity
-import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
 import com.dpfht.demofbasemvvm.framework.Constants
-import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -56,7 +37,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class FirebaseDataSourceImpl(
   private val context: Context
@@ -64,9 +44,6 @@ class FirebaseDataSourceImpl(
 
   private val rawConfigs = BehaviorSubject.create<RemoteConfigEntity>()
   private val theConfigs: Observable<RemoteConfigEntity> = rawConfigs
-
-  private val rawLoginState = PublishSubject.create<LoginState>()
-  private val theLoginState: Observable<LoginState> = rawLoginState
 
   private val rawReceivedPushMessage = PublishSubject.create<PushMessageEntity>()
   private val theReceivedPushMessage: Observable<PushMessageEntity> = rawReceivedPushMessage
@@ -84,18 +61,6 @@ class FirebaseDataSourceImpl(
 
   private val rawBookState = PublishSubject.create<BookState>()
   private val theBookState: Observable<BookState> = rawBookState
-
-  private val signInClient: SignInClient
-
-  private val signInLauncher = MainActivity.instance.registerForActivityResult(StartIntentSenderForResult()) { result ->
-    handleSignInResult(result.data)
-  }
-
-  private var verificationInProgress = false
-  private val callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
-  private var storedVerificationId: String? = ""
-  private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
-  private var phoneNumber = ""
 
   init {
     val configSettings = remoteConfigSettings {
@@ -119,41 +84,6 @@ class FirebaseDataSourceImpl(
         rawStateErrorConfigs.onNext("Config update error with code: ${error.code}")
       }
     })
-
-    signInClient = Identity.getSignInClient(context)
-
-    callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-      override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-        //Log.d("Demo Firebase", "onVerificationCompleted:$credential")
-        verificationInProgress = false
-
-        signInWithPhoneAuthCredential(credential)
-      }
-
-      override fun onVerificationFailed(e: FirebaseException) {
-        //Log.w("Demo Firebase", "onVerificationFailed", e)
-        verificationInProgress = false
-
-        if (e is FirebaseAuthInvalidCredentialsException) {
-          rawLoginState.onNext(LoginState.Error("Invalid phone number."))
-        } else if (e is FirebaseTooManyRequestsException) {
-          // The SMS quota for the project has been exceeded
-          rawLoginState.onNext(LoginState.Error("Quota exceeded."))
-        }
-
-        rawLoginState.onNext(LoginState.Error("Verification Failed: ${e.message}"))
-      }
-
-      override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-        //Log.d("Demo Firebase", "onCodeSent:$verificationId")
-
-        storedVerificationId = verificationId
-        resendToken = token
-
-        rawLoginState.onNext(LoginState.VerificationCodeSent)
-      }
-    }
 
     LocalBroadcastManager.getInstance(context).registerReceiver(object : BroadcastReceiver() {
       override fun onReceive(context: Context?, intent: Intent?) {
@@ -182,13 +112,6 @@ class FirebaseDataSourceImpl(
     rawConfigs.onNext(RemoteConfigEntity(titleLoginScreen = titleScreen))
   }
 
-  override suspend fun isLogin(): Boolean {
-    val auth = FirebaseAuth.getInstance()
-    val currentUser = auth.currentUser
-
-    return currentUser != null
-  }
-
   override suspend fun logEvent(eventName: String, param: Map<String, String>) {
     val bundle = Bundle()
 
@@ -214,161 +137,12 @@ class FirebaseDataSourceImpl(
     return theConfigs
   }
 
-  override fun getStreamLoginState(): Observable<LoginState> {
-    return theLoginState
-  }
-
-  override suspend fun signInWithGoogle() {
-    this.phoneNumber = ""
-
-    val signInRequest = GetSignInIntentRequest.builder()
-      .setServerClientId(context.getString(R.string.default_web_client_id))
-      .build()
-
-    signInClient.getSignInIntent(signInRequest)
-      .addOnSuccessListener { pendingIntent ->
-        launchSignIn(pendingIntent)
-      }
-      .addOnFailureListener { e ->
-        //Log.e("DemoFirebase", "Google Sign-in failed", e)
-        rawLoginState.onNext(LoginState.Error("Google Sign-in failed $e"))
-      }
-  }
-
-  private fun launchSignIn(pendingIntent: PendingIntent) {
-    try {
-      val intentSenderRequest = IntentSenderRequest.Builder(pendingIntent).build()
-      signInLauncher.launch(intentSenderRequest)
-    } catch (e: IntentSender.SendIntentException) {
-      //Log.e("DemoFirebase", "Couldn't start Sign In: ${e.localizedMessage}")
-      rawLoginState.onNext(LoginState.Error("Couldn't start Sign In: ${e.localizedMessage}"))
-    }
-  }
-
-  private fun handleSignInResult(data: Intent?) {
-    try {
-      val credential = signInClient.getSignInCredentialFromIntent(data)
-      val idToken = credential.googleIdToken
-      if (idToken != null) {
-        //Log.d("Demo Firebase", "firebaseAuthWithGoogle: ${credential.id}")
-        firebaseAuthWithGoogle(idToken)
-      } else {
-        // Shouldn't happen.
-        //Log.d("DemoFirebase", "No ID token!")
-        rawLoginState.onNext(LoginState.Error("No ID token!"))
-      }
-    } catch (e: ApiException) {
-      // Google Sign In failed, update UI appropriately
-      //Log.w("DemoFirebae", "Google sign in failed", e)
-      rawLoginState.onNext(LoginState.Error("Google sign in failed $e"))
-    }
-  }
-
-  private fun firebaseAuthWithGoogle(idToken: String) {
-    val credential = GoogleAuthProvider.getCredential(idToken, null)
-    val auth = Firebase.auth
-    auth.signInWithCredential(credential).addOnCompleteListener { task ->
-      if (task.isSuccessful) {
-        //Log.d("DemoFirebase", "signInWithCredential:success")
-
-        rawLoginState.onNext(LoginState.Login)
-      } else {
-        //Log.w("DemoFirebase", "signInWithCredential:failure", task.exception)
-        rawLoginState.onNext(LoginState.Error("signInWithCredential:failure ${task.exception}"))
-      }
-    }
-  }
-
   override suspend fun logout() {
-    Firebase.auth.signOut()
-
-    try {
-      // Google sign out
-      signInClient.signOut()
-    } catch (_: Exception) {
-    }
-
     FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
-      rawLoginState.onNext(LoginState.Logout)
       reset()
     }.addOnFailureListener {
-      rawLoginState.onNext(LoginState.Logout)
       reset()
     }
-  }
-
-  override suspend fun startPhoneNumberVerification(phoneNumber: String) {
-    this.phoneNumber = phoneNumber
-
-    val auth = Firebase.auth
-    val options = PhoneAuthOptions.newBuilder(auth)
-      .setPhoneNumber(phoneNumber) // Phone number to verify
-      .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-      .setActivity(MainActivity.instance) // Activity (for callback binding)
-      .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-      .build()
-    PhoneAuthProvider.verifyPhoneNumber(options)
-
-    verificationInProgress = true
-  }
-
-  override suspend fun verifyPhoneNumberWithCode(code: String) {
-    val verificationId = storedVerificationId
-    verificationId?.let {
-      val credential = PhoneAuthProvider.getCredential(verificationId, code)
-      signInWithPhoneAuthCredential(credential)
-    }
-  }
-
-  override suspend fun resendVerificationCode() {
-    val token = resendToken
-    val auth = Firebase.auth
-    val optionsBuilder = PhoneAuthOptions.newBuilder(auth)
-      .setPhoneNumber(phoneNumber) // Phone number to verify
-      .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-      .setActivity(MainActivity.instance) // Activity (for callback binding)
-      .setCallbacks(callbacks) // OnVerificationStateChangedCallbacks
-
-    //if (token != null) {
-      optionsBuilder.setForceResendingToken(token) // callback's ForceResendingToken
-    //}
-    PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build())
-  }
-
-  private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-    val auth = Firebase.auth
-    auth.signInWithCredential(credential).addOnCompleteListener { task ->
-      if (task.isSuccessful) {
-        // Sign in success, update UI with the signed-in user's information
-        //Log.d("Demo Firebase", "signInWithCredential:success")
-        rawLoginState.onNext(LoginState.Login)
-      } else {
-        //Log.w("Demo Firebase", "signInWithCredential:failure", task.exception)
-        if (task.exception is FirebaseAuthInvalidCredentialsException) {
-          // The verification code entered was invalid
-          rawLoginState.onNext(LoginState.Error("Invalid code.1"))
-        } else {
-          rawLoginState.onNext(LoginState.Error("Authentication Failed."))
-        }
-      }
-    }
-  }
-
-  override suspend fun getUserProfile(): UserProfileEntity {
-    val auth = Firebase.auth
-    val currentUser = auth.currentUser
-
-    currentUser?.let {
-      return UserProfileEntity(
-        currentUser.uid,
-        currentUser.displayName ?: "",
-        currentUser.email ?: "",
-        currentUser.phoneNumber ?: "",
-        currentUser.photoUrl.toString()
-      )
-    }
-
-    throw AppException("can't get user profile")
   }
 
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
@@ -432,9 +206,9 @@ class FirebaseDataSourceImpl(
       return
     }
 
-    //rawFCMQuota.onNext(0)
-    //throw AppException("failed to fetch FCM Quota because no uid")
-    rawFCMQuota.onNext(FCMQuotaState.Error("failed to fetch FCM Quota because no uid"))
+    rawFCMQuota.onNext(FCMQuotaState.QuotaCount(0))
+    throw AppException("failed to fetch FCM Quota because no uid")
+    //rawFCMQuota.onNext(FCMQuotaState.Error("failed to fetch FCM Quota because no uid"))
   }
 
   override suspend fun setFCMQuota(count: Int) {
@@ -455,9 +229,9 @@ class FirebaseDataSourceImpl(
       return
     }
 
-    //rawFCMQuota.onNext(count)
-    //throw AppException("failed to set FCM Quota because no uid")
-    rawFCMQuota.onNext(FCMQuotaState.Error("failed to set FCM Quota because no uid"))
+    rawFCMQuota.onNext(FCMQuotaState.QuotaCount(count))
+    throw AppException("failed to set FCM Quota because no uid")
+    //rawFCMQuota.onNext(FCMQuotaState.Error("failed to set FCM Quota because no uid"))
   }
 
   override fun getStreamBookState(): Observable<BookState> {
@@ -647,17 +421,11 @@ class FirebaseDataSourceImpl(
   }
 
   private fun reset() {
-    //rawConfigs.onNext("")
-    rawLoginState.onNext(LoginState.None)
     rawReceivedPushMessage.onNext(PushMessageEntity())
     rawFCMToken.onNext("")
     rawStateErrorConfigs.onNext("")
     rawFCMQuota.onNext(FCMQuotaState.QuotaCount(-1))
     rawBookState.onNext(BookState.None)
     rawConfigs.onNext(RemoteConfigEntity())
-
-    verificationInProgress = false
-    storedVerificationId = ""
-    phoneNumber = ""
   }
 }

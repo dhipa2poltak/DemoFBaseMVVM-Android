@@ -1,5 +1,6 @@
 package com.dpfht.demofbasemvvm.data.repository
 
+import com.dpfht.demofbasemvvm.data.datasource.FirebaseLoginDataSource
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseDataSource
 import com.dpfht.demofbasemvvm.data.datasource.RestDataSource
 import com.dpfht.demofbasemvvm.data.model.remote.request.Data
@@ -20,8 +21,10 @@ class AppRepositoryImpl(
   private val restDataSource: RestDataSource
 ): AppRepository {
 
+  lateinit var firebaseLoginDataSource: FirebaseLoginDataSource
+
   override suspend fun isLogin(): Boolean {
-    return firebaseDataSource.isLogin()
+    return firebaseLoginDataSource.isLogin()
   }
 
   override suspend fun logEvent(eventName: String, param: Map<String, String>) {
@@ -37,31 +40,32 @@ class AppRepositoryImpl(
   }
 
   override suspend fun signInWithGoogle() {
-    return firebaseDataSource.signInWithGoogle()
+    return firebaseLoginDataSource.signInWithGoogle()
   }
 
   override fun getStreamLoginState(): Observable<LoginState> {
-    return firebaseDataSource.getStreamLoginState()
+    return firebaseLoginDataSource.getStreamLoginState()
   }
 
   override suspend fun logout() {
-    return firebaseDataSource.logout()
+    firebaseLoginDataSource.logout()
+    firebaseDataSource.logout()
   }
 
   override suspend fun startPhoneNumberVerification(phoneNumber: String) {
-    return firebaseDataSource.startPhoneNumberVerification(phoneNumber)
+    return firebaseLoginDataSource.startPhoneNumberVerification(phoneNumber)
   }
 
   override suspend fun verifyPhoneNumberWithCode(code: String) {
-    return firebaseDataSource.verifyPhoneNumberWithCode(code)
+    return firebaseLoginDataSource.verifyPhoneNumberWithCode(code)
   }
 
   override suspend fun resendVerificationCode() {
-    return firebaseDataSource.resendVerificationCode()
+    return firebaseLoginDataSource.resendVerificationCode()
   }
 
   override suspend fun getUserProfile(): UserProfileEntity {
-    return firebaseDataSource.getUserProfile()
+    return firebaseLoginDataSource.getUserProfile()
   }
 
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
