@@ -117,8 +117,16 @@ dependencies {
   androidTestImplementation(Deps.jUnitExt)
   androidTestImplementation(Deps.espresso)
 
-  implementation(Deps.playServicesAuth)
-
   implementation(Deps.hilt)
   kapt(Deps.hiltCompiler)
+
+  implementation(Deps.rxKotlin)
+
+  implementation(platform(Deps.firebaseBom))
+
+  implementation(Deps.firebaseAnalytics)
+  implementation(Deps.firebaseCrashlytics)
+  implementation(Deps.firebaseAuth)
+  implementation(Deps.playServicesAuth)
+  implementation(Deps.firebaseMessaging)
 }

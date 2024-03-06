@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.firebase
+package com.dpfht.demofbasemvvm.datasource
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -6,11 +6,11 @@ import android.content.IntentSender
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.dpfht.demofbasemvvm.R
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseLoginDataSource
 import com.dpfht.demofbasemvvm.domain.entity.AppException
 import com.dpfht.demofbasemvvm.domain.entity.LoginState
 import com.dpfht.demofbasemvvm.domain.entity.UserProfileEntity
-import com.dpfht.demofbasemvvm.framework.wrapper.FirebaseClientIdWrapper
 import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
@@ -29,8 +29,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 class FirebaseLoginDataSourceImpl(
-  private val activity: AppCompatActivity,
-  private val firebaseClientIdWrapper: FirebaseClientIdWrapper
+  private val activity: AppCompatActivity
 ): FirebaseLoginDataSource {
 
   private val rawLoginState = PublishSubject.create<LoginState>()
@@ -56,6 +55,7 @@ class FirebaseLoginDataSourceImpl(
 
       override fun onVerificationFailed(e: FirebaseException) {
         //Log.w("Demo Firebase", "onVerificationFailed", e)
+        e.printStackTrace()
         verificationInProgress = false
 
         if (e is FirebaseAuthInvalidCredentialsException) {
@@ -117,8 +117,7 @@ class FirebaseLoginDataSourceImpl(
     this.phoneNumber = ""
 
     val signInRequest = GetSignInIntentRequest.builder()
-      //.setServerClientId(activity.getString(R.string.default_web_client_id))
-      .setServerClientId(firebaseClientIdWrapper.getClientId())
+      .setServerClientId(activity.getString(R.string.default_web_client_id))
       .build()
 
     signInClient.getSignInIntent(signInRequest)

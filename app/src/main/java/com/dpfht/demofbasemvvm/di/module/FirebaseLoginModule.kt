@@ -1,10 +1,9 @@
-package com.dpfht.demofbasemvvm.firebase.di.module
+package com.dpfht.demofbasemvvm.di.module
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseLoginDataSource
-import com.dpfht.demofbasemvvm.firebase.FirebaseLoginDataSourceImpl
-import com.dpfht.demofbasemvvm.framework.wrapper.FirebaseClientIdWrapper
+import com.dpfht.demofbasemvvm.datasource.FirebaseLoginDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +16,8 @@ class FirebaseLoginModule {
 
   @Provides
   fun provideFirebaseLoginDataSource(
-    @ActivityContext context: Context,
-    firebaseClientIdWrapper: FirebaseClientIdWrapper
+    @ActivityContext context: Context
   ): FirebaseLoginDataSource {
-    return FirebaseLoginDataSourceImpl(context as AppCompatActivity, firebaseClientIdWrapper)
+    return FirebaseLoginDataSourceImpl(context as AppCompatActivity)
   }
 }
