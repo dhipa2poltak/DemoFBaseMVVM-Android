@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.datasource.remote.firebase
+package com.dpfht.demofbasemvvm.firebase.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -12,8 +12,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.core.app.NotificationCompat.Builder
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.dpfht.demofbasemvvm.MainActivity
-import com.dpfht.demofbasemvvm.R
+import com.dpfht.demofbasemvvm.firebase.R
 import com.dpfht.demofbasemvvm.framework.Constants
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -49,8 +48,9 @@ class FireMsgService : FirebaseMessagingService() {
   private fun showNotification(title: String?, body: String?) {
     val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-    val notificationIntent = Intent(this, MainActivity::class.java)
-    notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    //val notificationIntent = Intent(this, activity::class.java)
+    val notificationIntent = applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName)
+    notificationIntent?.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //or Intent.FLAG_ACTIVITY_CLEAR_TASK
     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
     val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_message)

@@ -21,7 +21,7 @@
         android:resource="@drawable/ic_message" />
 
     <service
-        android:name=".datasource.remote.firebase.FireMsgService"
+        android:name=".firebase.service.FireMsgService"
         android:exported="false">
       <intent-filter>
         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -29,6 +29,7 @@
     </service>
 
     <!-- Trigger Google Play services to install the backported photo picker module. -->
+    <!--suppress AndroidDomInspection -->
     <service android:name="com.google.android.gms.metadata.ModuleDependencies"
         android:enabled="false"
         android:exported="false"

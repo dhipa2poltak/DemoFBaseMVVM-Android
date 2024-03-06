@@ -1,8 +1,8 @@
-package com.dpfht.demofbasemvvm.di.module
+package com.dpfht.demofbasemvvm.firebase.di.module
 
 import android.content.Context
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseDataSource
-import com.dpfht.demofbasemvvm.datasource.remote.FirebaseDataSourceImpl
+import com.dpfht.demofbasemvvm.firebase.FirebaseDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

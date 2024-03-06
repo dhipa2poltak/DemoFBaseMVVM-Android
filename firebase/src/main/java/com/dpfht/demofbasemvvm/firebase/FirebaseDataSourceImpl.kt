@@ -1,4 +1,4 @@
-package com.dpfht.demofbasemvvm.datasource.remote
+package com.dpfht.demofbasemvvm.firebase
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.webkit.MimeTypeMap
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.dpfht.demofbasemvvm.R
 import com.dpfht.demofbasemvvm.data.datasource.FirebaseDataSource
 import com.dpfht.demofbasemvvm.domain.entity.AppException
 import com.dpfht.demofbasemvvm.domain.entity.BookEntity

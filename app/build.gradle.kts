@@ -103,6 +103,7 @@ dependencies {
 
   implementation(project(":framework"))
   implementation(project(":navigation"))
+  implementation(project(":firebase"))
   implementation(project(":data"))
   implementation(project(":domain"))
 
@@ -116,19 +117,8 @@ dependencies {
   androidTestImplementation(Deps.jUnitExt)
   androidTestImplementation(Deps.espresso)
 
+  implementation(Deps.playServicesAuth)
+
   implementation(Deps.hilt)
   kapt(Deps.hiltCompiler)
-
-  implementation(platform(Deps.firebaseBom))
-
-  implementation(Deps.firebaseAnalytics)
-  implementation(Deps.firebaseCrashlytics)
-  implementation(Deps.firebaseConfig)
-  implementation(Deps.firebaseAuth)
-  implementation(Deps.playServicesAuth)
-  implementation(Deps.firebaseMessaging)
-  implementation(Deps.firebaseFirestore)
-  implementation(Deps.firebaseStorage)
-
-  implementation(Deps.rxKotlin)
 }
