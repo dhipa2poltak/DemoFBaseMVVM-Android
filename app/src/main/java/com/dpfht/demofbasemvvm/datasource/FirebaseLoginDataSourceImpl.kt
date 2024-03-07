@@ -174,19 +174,6 @@ class FirebaseLoginDataSourceImpl(
     }
   }
 
-  override suspend fun logout() {
-    Firebase.auth.signOut()
-
-    try {
-      // Google sign out
-      signInClient.signOut()
-    } catch (_: Exception) {
-    }
-
-    rawLoginState.onNext(LoginState.Logout)
-    reset()
-  }
-
   override suspend fun startPhoneNumberVerification(phoneNumber: String) {
     this.phoneNumber = phoneNumber
 
@@ -242,6 +229,19 @@ class FirebaseLoginDataSourceImpl(
         }
       }
     }
+  }
+
+  override suspend fun logout() {
+    Firebase.auth.signOut()
+
+    try {
+      // Google sign out
+      signInClient.signOut()
+    } catch (_: Exception) {
+    }
+
+    rawLoginState.onNext(LoginState.Logout)
+    reset()
   }
 
   private fun reset() {

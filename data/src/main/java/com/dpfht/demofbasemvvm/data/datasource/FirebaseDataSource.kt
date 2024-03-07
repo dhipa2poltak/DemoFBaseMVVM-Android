@@ -11,7 +11,6 @@ interface FirebaseDataSource {
   suspend fun logEvent(eventName: String, param: Map<String, String>)
   suspend fun fetchConfigs()
   fun getStreamConfigs(): Observable<RemoteConfigEntity>
-  suspend fun logout()
   fun getStreamPushMessage(): Observable<PushMessageEntity>
   fun getStreamFCMToken(): Observable<String>
   suspend fun fetchFCMToken()
@@ -24,4 +23,5 @@ interface FirebaseDataSource {
   suspend fun deleteBook(book: BookEntity)
   suspend fun getAllBooks()
   suspend fun getBook(bookId: String)
+  suspend fun logout()
 }

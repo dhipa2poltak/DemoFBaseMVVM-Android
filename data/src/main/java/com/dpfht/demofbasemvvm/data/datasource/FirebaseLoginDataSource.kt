@@ -10,8 +10,8 @@ interface FirebaseLoginDataSource {
   suspend fun getUserProfile(): UserProfileEntity
   fun getStreamLoginState(): Observable<LoginState>
   suspend fun signInWithGoogle()
-  suspend fun logout()
   suspend fun startPhoneNumberVerification(phoneNumber: String)
   suspend fun verifyPhoneNumberWithCode(code: String)
   suspend fun resendVerificationCode()
+  suspend fun logout()
 }

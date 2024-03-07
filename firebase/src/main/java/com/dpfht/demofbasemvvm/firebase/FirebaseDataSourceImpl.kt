@@ -136,14 +136,6 @@ class FirebaseDataSourceImpl(
     return theConfigs
   }
 
-  override suspend fun logout() {
-    FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
-      reset()
-    }.addOnFailureListener {
-      reset()
-    }
-  }
-
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
     return theReceivedPushMessage
   }
@@ -417,6 +409,14 @@ class FirebaseDataSourceImpl(
     }
 
     throw AppException("Failed to get book data because no uid")
+  }
+
+  override suspend fun logout() {
+    FirebaseMessaging.getInstance().deleteToken().addOnSuccessListener {
+      reset()
+    }.addOnFailureListener {
+      reset()
+    }
   }
 
   private fun reset() {

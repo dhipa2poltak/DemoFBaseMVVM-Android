@@ -27,29 +27,16 @@ class AppRepositoryImpl(
     return firebaseLoginDataSource.isLogin()
   }
 
-  override suspend fun logEvent(eventName: String, param: Map<String, String>) {
-    return firebaseDataSource.logEvent(eventName, param)
-  }
-
-  override suspend fun fetchConfigs() {
-    return firebaseDataSource.fetchConfigs()
-  }
-
-  override fun getStreamConfigs(): Observable<RemoteConfigEntity> {
-    return firebaseDataSource.getStreamConfigs()
-  }
-
-  override suspend fun signInWithGoogle() {
-    return firebaseLoginDataSource.signInWithGoogle()
+  override suspend fun getUserProfile(): UserProfileEntity {
+    return firebaseLoginDataSource.getUserProfile()
   }
 
   override fun getStreamLoginState(): Observable<LoginState> {
     return firebaseLoginDataSource.getStreamLoginState()
   }
 
-  override suspend fun logout() {
-    firebaseLoginDataSource.logout()
-    firebaseDataSource.logout()
+  override suspend fun signInWithGoogle() {
+    return firebaseLoginDataSource.signInWithGoogle()
   }
 
   override suspend fun startPhoneNumberVerification(phoneNumber: String) {
@@ -64,8 +51,16 @@ class AppRepositoryImpl(
     return firebaseLoginDataSource.resendVerificationCode()
   }
 
-  override suspend fun getUserProfile(): UserProfileEntity {
-    return firebaseLoginDataSource.getUserProfile()
+  override suspend fun logEvent(eventName: String, param: Map<String, String>) {
+    return firebaseDataSource.logEvent(eventName, param)
+  }
+
+  override suspend fun fetchConfigs() {
+    return firebaseDataSource.fetchConfigs()
+  }
+
+  override fun getStreamConfigs(): Observable<RemoteConfigEntity> {
+    return firebaseDataSource.getStreamConfigs()
   }
 
   override fun getStreamPushMessage(): Observable<PushMessageEntity> {
@@ -118,5 +113,10 @@ class AppRepositoryImpl(
 
   override suspend fun getBook(bookId: String) {
     return firebaseDataSource.getBook(bookId)
+  }
+
+  override suspend fun logout() {
+    firebaseLoginDataSource.logout()
+    firebaseDataSource.logout()
   }
 }
